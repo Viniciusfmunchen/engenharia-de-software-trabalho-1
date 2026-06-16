@@ -13,35 +13,35 @@ const Reports = lazy(() => import('@/pages/reports'));
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <AppLayout />,
+    Component: AppLayout,
     children: [
       {
         index: true,
-        element: <Welcome />,
+        Component: Welcome,
       },
       {
         path: 'dashboard',
-        element: <Dashboard />,
+        Component: Dashboard,
       },
       {
         path: 'recipes',
-        element: <Recipes />,
+        Component: Recipes,
       },
       {
         path: 'ingredients',
-        element: <Ingredients />,
+        Component: Ingredients,
       },
       {
         path: 'purchases',
-        element: <Purchases />,
+        Component: Purchases,
       },
       {
         path: 'sales',
-        element: <Sales />,
+        Component: Sales,
       },
       {
         path: 'reports',
-        element: <Reports />,
+        Component: Reports,
       },
     ],
   },
