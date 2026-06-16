@@ -6,11 +6,9 @@ export const TabsRoot = styled(Box)(() => ({
   width: '100%',
 }));
 
-export const TabsHeader = styled(Box)(({ theme }) => ({
-  width: 'fit-content',
-  maxWidth: '100%',
+export const TabsHeader = styled(Box)(() => ({
+  width: '100%',
   borderBottom: '1px solid #eadfce',
-  backgroundColor: '#fff7ed',
 }));
 
 export const StyledTabs = styled(Tabs)(({ theme }) => ({
@@ -33,6 +31,9 @@ export const StyledTab = styled(Tab)(({ theme }) => ({
   textTransform: 'none',
   borderRadius: 0,
   transition: theme.transitions.create(['background-color', 'color']),
+  flex: '1',
+  minWidth: 0,
+  maxWidth: 'none',
 
   '&:first-of-type': {
     borderTopLeftRadius: theme.spacing(1),

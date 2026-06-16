@@ -2,10 +2,13 @@ import Container from '@/components/ui/container';
 import Tabs from '@/components/ui/tabs/tabs';
 import PageLayout from '@/layouts/page';
 import { Stack, Typography } from '@mui/material';
+import BreadsTab from './breads';
+import SalesTab from './sales';
+import SimulationTab from './simulation';
 
 const Dashboard = () => {
   return (
-    <PageLayout title="Painel de Gerenciamento">
+    <PageLayout title="Painel de Gerenciamento" aside={<Typography variant='caption' sx={{ fontWeight: 'bold' }} >Período análisado 01/01/2026 à 31/12/2026</Typography>}>
       <Stack direction="row" sx={{ gap: 1, padding: 2 }}>
         <Container sx={{ flex: 1 }}>
           <Typography variant="caption" color="text.secondary">
@@ -35,17 +38,6 @@ const Dashboard = () => {
         </Container>
         <Container sx={{ flex: 1 }}>
           <Typography variant="caption" color="text.secondary">
-            Pão mais vendido
-          </Typography>
-
-          <Typography variant="h3">Pão Francês</Typography>
-
-          <Typography variant="caption" color="text.secondary">
-            5.100 unidades
-          </Typography>
-        </Container>
-        <Container sx={{ flex: 1 }}>
-          <Typography variant="caption" color="text.secondary">
             Ingredientes em falta
           </Typography>
 
@@ -61,16 +53,16 @@ const Dashboard = () => {
       <Tabs
         tabs={[
           {
-            label: 'Resumo',
-            content: <div>Conteúdo do resumo</div>,
+            label: 'Pães',
+            content: <BreadsTab />,
           },
           {
-            label: 'Ingredientes',
-            content: <div>Conteúdo de ingredientes</div>,
+            label: 'Compradores',
+            content: <SalesTab />,
           },
           {
-            label: 'Vendas',
-            content: <div>Conteúdo de vendas</div>,
+            label: 'Simular Produção',
+            content: <SimulationTab />,
           },
         ]}
       />

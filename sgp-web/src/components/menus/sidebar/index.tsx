@@ -16,6 +16,7 @@ import {
   SidebarText,
   SidebarToggleButton,
 } from './styles';
+import { useSidebar } from '@/contexts/sidebar';
 
 const menuItems = [
   {
@@ -51,23 +52,19 @@ const menuItems = [
 ];
 
 const Sidebar = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const { collapsed, toggleCollapsed } = useSidebar();
 
   const navigate = useNavigate();
   const location = useLocation();
 
   const currentPath = location.pathname.split('/')[1] || '';
 
-  const handleToggleCollapsed = () => {
-    setCollapsed((currentCollapsed) => !currentCollapsed);
-  };
-
   return (
     <SidebarContainer collapsed={collapsed}>
       <SidebarHeader>
         <SidebarIconSlot>
           <IconButton
-            onClick={handleToggleCollapsed}
+            onClick={toggleCollapsed}
             sx={{
               width: 40,
               height: 40,

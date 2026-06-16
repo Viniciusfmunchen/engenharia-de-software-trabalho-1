@@ -20,6 +20,7 @@ export const SidebarContainer = styled(Stack, {
   backgroundColor: '#2f2118',
   color: '#fff7ed',
   transition: theme.transitions.create('width'),
+  position: 'fixed',
 }));
 
 export const SidebarHeader = styled(Stack)(({ theme }) => ({
