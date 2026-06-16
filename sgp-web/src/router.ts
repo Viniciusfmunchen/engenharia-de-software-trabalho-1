@@ -5,10 +5,9 @@ import AppLayout from './layouts/app';
 
 const Welcome = lazy(() => import('@/pages/welcome'));
 const Dashboard = lazy(() => import('@/pages/dashboard'));
-const Recipes = lazy(() => import('@/pages/recipes'));
+const Recipes = lazy(() => import('@/pages/bread-recipes'));
 const Purchases = lazy(() => import('@/pages/purchases'));
 const Sales = lazy(() => import('@/pages/sales'));
-const Reports = lazy(() => import('@/pages/reports'));
 
 export const router = createBrowserRouter([
   {
@@ -24,7 +23,7 @@ export const router = createBrowserRouter([
         Component: Dashboard,
       },
       {
-        path: 'recipes',
+        path: 'bread-recipes',
         Component: Recipes,
       },
       {
@@ -38,10 +37,6 @@ export const router = createBrowserRouter([
       {
         path: 'sales',
         Component: Sales,
-      },
-      {
-        path: 'reports',
-        Component: Reports,
       },
     ],
   },

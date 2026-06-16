@@ -1,68 +1,58 @@
-import Container from '@/components/ui/container';
+import Card from '@/components/ui/card';
 import Tabs from '@/components/ui/tabs/tabs';
+import { messages } from '@/constants/messages';
 import PageLayout from '@/layouts/page';
+import { formatCurrency, getPurchasesSummary, getSalesSummary, getStockSummary } from '@/mock/operationsMock';
 import { Stack, Typography } from '@mui/material';
-import BreadsTab from './breads';
-import SalesTab from './sales';
-import SimulationTab from './simulation';
+import BreadsTab from './tabs/breads';
+import PurchasesTab from './tabs/purchases';
+import SalesTab from './tabs/sales';
 
 const Dashboard = () => {
+  const salesSummary = getSalesSummary();
+  const purchasesSummary = getPurchasesSummary();
+  const stockSummary = getStockSummary();
+
   return (
-    <PageLayout title="Painel de Gerenciamento" aside={<Typography variant='caption' sx={{ fontWeight: 'bold' }} >Período análisado 01/01/2026 à 31/12/2026</Typography>}>
-      <Stack direction="row" sx={{ gap: 1, padding: 2 }}>
-        <Container sx={{ flex: 1 }}>
-          <Typography variant="caption" color="text.secondary">
-            Total vendido
-          </Typography>
-
-          <Typography variant="h3" color="success">
-            R$ 11.284,50
-          </Typography>
-
-          <Typography variant="caption" color="text.secondary">
-            Soma de vendas no período
-          </Typography>
-        </Container>
-        <Container sx={{ flex: 1 }}>
-          <Typography variant="caption" color="text.secondary">
-            Lucro estimado
-          </Typography>
-
-          <Typography variant="h3" color="success">
-            R$ 6.342,50
-          </Typography>
-
-          <Typography variant="caption" color="text.secondary">
-            Preço de venda - custo da receita
-          </Typography>
-        </Container>
-        <Container sx={{ flex: 1 }}>
-          <Typography variant="caption" color="text.secondary">
-            Ingredientes em falta
-          </Typography>
-
-          <Typography variant="h3" color="error">
-            2
-          </Typography>
-
-          <Typography variant="caption" color="text.secondary">
-            Abaixo do estoque minimo
-          </Typography>
-        </Container>
+    <PageLayout
+      title={messages.pages.dashboard.title}
+      aside={
+        <Typography variant="caption" sx={{ fontWeight: 'bold' }}>
+          {messages.pages.dashboard.period}
+        </Typography>
+      }
+    >
+      <Stack direction={{ xs: 'column', md: 'row' }} sx={{ gap: 1, padding: 2 }}>
+        <Card title={messages.pages.dashboard.totalSold} content={formatCurrency(salesSummary.revenue)} info={messages.pages.dashboard.soldSum} />
+        <Card
+          title={messages.common.estimatedProfit}
+          content={formatCurrency(salesSummary.profit)}
+          info={messages.pages.dashboard.profitInfo}
+        />
+        <Card
+          title={messages.pages.dashboard.purchases}
+          content={formatCurrency(purchasesSummary.total)}
+          info={`${purchasesSummary.pendingCount} ${messages.pages.dashboard.pendingPurchases}`}
+        />
+        <Card
+          title={messages.pages.dashboard.lowStock}
+          content={stockSummary.lowStockCount.toLocaleString('pt-BR')}
+          info={`${stockSummary.criticalStockCount} ${messages.pages.dashboard.criticalIngredients}`}
+        />
       </Stack>
       <Tabs
         tabs={[
           {
-            label: 'Pães',
-            content: <BreadsTab />,
-          },
-          {
-            label: 'Compradores',
+            label: messages.tabs.sales,
             content: <SalesTab />,
           },
           {
-            label: 'Simular Produção',
-            content: <SimulationTab />,
+            label: messages.tabs.purchases,
+            content: <PurchasesTab />,
+          },
+          {
+            label: messages.tabs.breads,
+            content: <BreadsTab />,
           },
         ]}
       />

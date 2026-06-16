@@ -9,6 +9,7 @@ import {
   TableSortLabel,
   Typography,
 } from '@mui/material';
+import { messages } from '@/constants/messages';
 
 import { StyledTableContainer } from './styles';
 
@@ -61,7 +62,7 @@ const Table = <T,>({
   columns,
   rows,
   getRowId,
-  emptyMessage = 'Nenhum registro encontrado.',
+  emptyMessage = messages.common.noRecords,
   defaultSort,
 }: TableProps<T>) => {
   const [sort, setSort] = useState<SortState | undefined>(defaultSort);

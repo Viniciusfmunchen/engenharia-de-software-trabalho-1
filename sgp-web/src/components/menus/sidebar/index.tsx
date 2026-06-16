@@ -4,8 +4,10 @@ import GrainIcon from '@mui/icons-material/Grain';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { Divider, IconButton, Stack, Tooltip, Typography } from '@mui/material';
-import { useState } from 'react';
+import { Badge, Divider, IconButton, Stack, Tooltip, useMediaQuery, useTheme } from '@mui/material';
+import { messages } from '@/constants/messages';
+import { useSidebar } from '@/contexts/sidebar';
+import { getLowStockIngredients } from '@/mock/operationsMock';
 import { useLocation, useNavigate } from 'react-router';
 
 import {
@@ -16,35 +18,34 @@ import {
   SidebarText,
   SidebarToggleButton,
 } from './styles';
-import { useSidebar } from '@/contexts/sidebar';
 
 const menuItems = [
   {
-    label: 'Painel',
+    label: messages.nav.dashboard,
     value: 'dashboard',
     path: '/dashboard',
     icon: <DashboardIcon />,
   },
   {
-    label: 'Receitas',
-    value: 'recipes',
-    path: '/recipes',
+    label: messages.nav.breadRecipes,
+    value: 'bread-recipes',
+    path: '/bread-recipes',
     icon: <RestaurantMenuIcon />,
   },
   {
-    label: 'Ingredientes',
+    label: messages.nav.ingredients,
     value: 'ingredients',
     path: '/ingredients',
     icon: <GrainIcon />,
   },
   {
-    label: 'Compras',
+    label: messages.nav.purchases,
     value: 'purchases',
     path: '/purchases',
     icon: <ShoppingCartIcon />,
   },
   {
-    label: 'Vendas',
+    label: messages.nav.sales,
     value: 'sales',
     path: '/sales',
     icon: <PointOfSaleIcon />,
@@ -53,6 +54,10 @@ const menuItems = [
 
 const Sidebar = () => {
   const { collapsed, toggleCollapsed } = useSidebar();
+  const theme = useTheme();
+  const isCompact = useMediaQuery(theme.breakpoints.down('sm'));
+  const effectiveCollapsed = collapsed || isCompact;
+  const lowStockCount = getLowStockIngredients().length;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -60,43 +65,52 @@ const Sidebar = () => {
   const currentPath = location.pathname.split('/')[1] || '';
 
   return (
-    <SidebarContainer collapsed={collapsed}>
+    <SidebarContainer collapsed={effectiveCollapsed}>
       <SidebarHeader>
         <SidebarIconSlot>
           <IconButton
             onClick={toggleCollapsed}
+            disabled={isCompact}
             sx={{
               width: 40,
               height: 40,
               color: 'whitesmoke',
             }}
           >
-            {collapsed ? <ChevronRight /> : <ChevronLeft />}
+            {effectiveCollapsed ? <ChevronRight /> : <ChevronLeft />}
           </IconButton>
         </SidebarIconSlot>
 
         <Stack>
-          <SidebarText collapsed={collapsed} variant="h6">
-            SGP
+          <SidebarText collapsed={effectiveCollapsed} variant="h6">
+            {messages.app.shortName}
           </SidebarText>
 
-          <SidebarText collapsed={collapsed} variant="caption">
-            Sistema de Gerenciamento de Padarias
+          <SidebarText collapsed={effectiveCollapsed} variant="caption">
+            {messages.app.name}
           </SidebarText>
         </Stack>
       </SidebarHeader>
       <Divider color={'#463428'} />
       <SidebarMenu>
         {menuItems.map((item) => (
-          <Tooltip key={item.value} title={collapsed ? item.label : ''} placement="right">
+          <Tooltip key={item.value} title={effectiveCollapsed ? item.label : ''} placement="right">
             <SidebarToggleButton
               value={item.value}
               selected={currentPath === item.value}
               onClick={() => navigate(item.path)}
             >
-              <SidebarIconSlot>{item.icon}</SidebarIconSlot>
+              <SidebarIconSlot>
+                {item.value === 'ingredients' && lowStockCount > 0 ? (
+                  <Badge badgeContent={lowStockCount} color="error">
+                    {item.icon}
+                  </Badge>
+                ) : (
+                  item.icon
+                )}
+              </SidebarIconSlot>
 
-              <SidebarText collapsed={collapsed} variant="body2">
+              <SidebarText collapsed={effectiveCollapsed} variant="body2">
                 {item.label}
               </SidebarText>
             </SidebarToggleButton>

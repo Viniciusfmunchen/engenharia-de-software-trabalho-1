@@ -1,6 +1,7 @@
+import { messages } from '@/constants/messages';
+import type { SxProps, Theme } from '@mui/material';
 import type { ReactNode, SyntheticEvent } from 'react';
 import { useId, useState } from 'react';
-import type { SxProps, Theme } from '@mui/material';
 
 import { StyledTab, StyledTabPanel, StyledTabs, TabsHeader, TabsRoot } from './styles';
 
@@ -24,7 +25,7 @@ const Tabs = ({
   defaultValue = 0,
   value,
   onChange,
-  ariaLabel = 'Navegação por abas',
+  ariaLabel = messages.tabs.navigation,
   panelSx,
 }: AppTabsProps) => {
   const id = useId();

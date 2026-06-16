@@ -1,52 +1,35 @@
-import type { TableColumn } from "../ui/table";
-import Table from "../ui/table";
-
-interface SalesTable {
-  id: number,
-  buyerName: string,
-  quantity: number,
-  revenue: number,
-}
+import { messages } from '@/constants/messages';
+import { formatCurrency, getCustomerSalesRows } from '@/mock/operationsMock';
+import type { CustomerSalesRow } from '@/types/bakery';
+import Table, { type TableColumn } from '../ui/table';
 
 const SalesTable = () => {
-  const rows: SalesTable[] = [
-    {
-      id: 1,
-      buyerName: 'Pão Francês',
-      quantity: 5100,
-      revenue: 4335,
-    },
-    {
-      id: 2,
-      buyerName: 'Pão de Queijo',
-      quantity: 2750,
-      revenue: 3300,
-
-    },
-  ];
-
-  const columns: TableColumn<SalesTable>[] = [
+  const columns: TableColumn<CustomerSalesRow>[] = [
     {
       id: 'buyerName',
-      label: 'Comprador',
+      label: messages.common.buyer,
       render: (row) => row.buyerName,
+      sortAccessor: (row) => row.buyerName,
+    },
+    {
+      id: 'orders',
+      label: messages.common.orders,
+      align: 'right',
+      render: (row) => row.orders.toLocaleString('pt-BR'),
+      sortAccessor: (row) => row.orders,
     },
     {
       id: 'quantity',
-      label: 'Vendidos',
+      label: messages.common.units,
       align: 'right',
       render: (row) => row.quantity.toLocaleString('pt-BR'),
       sortAccessor: (row) => row.quantity,
     },
     {
       id: 'revenue',
-      label: 'Faturamento',
+      label: messages.common.revenue,
       align: 'right',
-      render: (row) =>
-        row.revenue.toLocaleString('pt-BR', {
-          style: 'currency',
-          currency: 'BRL',
-        }),
+      render: (row) => formatCurrency(row.revenue),
       sortAccessor: (row) => row.revenue,
     },
   ];
@@ -54,10 +37,11 @@ const SalesTable = () => {
   return (
     <Table
       columns={columns}
-      rows={rows}
+      rows={getCustomerSalesRows()}
       getRowId={(row) => row.id}
+      defaultSort={{ columnId: 'revenue', direction: 'desc' }}
     />
   );
-}
+};
 
 export default SalesTable;
