@@ -1,4 +1,4 @@
-import RecipeTable from '@/components/bread-recipe/table';
+import RecipeTable from '@/components/recipe/table';
 import Card from '@/components/ui/card';
 import { messages } from '@/constants/messages';
 import { formatCurrency, getSalesSummary } from '@/mock/operationsMock';

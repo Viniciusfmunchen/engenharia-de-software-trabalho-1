@@ -14,36 +14,15 @@ export const ingredientCategories = [
 ] as const;
 
 export const paymentMethods = ['Pix', 'Cartão', 'Dinheiro'] as const;
-
 export const purchaseStatuses = ['Recebida', 'Pendente'] as const;
 
-export type IngredientUnit = (typeof ingredientUnits)[number];
-export type IngredientCategory = (typeof ingredientCategories)[number];
 export type PaymentMethod = (typeof paymentMethods)[number];
 export type PurchaseStatus = (typeof purchaseStatuses)[number];
 
-export interface Ingredient {
-  id: number;
-  name: string;
-  category: IngredientCategory;
-  unit: IngredientUnit;
-  costPerUnit: number;
-  stockQuantity: number;
-  minStockQuantity: number;
-}
 
 export interface RecipeIngredient {
   ingredientId: number;
   quantity: number;
-}
-
-export interface BreadRecipe {
-  id: number;
-  name: string;
-  salePriceInCents: number;
-  yieldUnits: number;
-  preparationTimeMinutes: number;
-  ingredients: RecipeIngredient[];
 }
 
 export interface Sale {

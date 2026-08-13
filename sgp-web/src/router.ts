@@ -5,7 +5,7 @@ import AppLayout from './layouts/app';
 
 const Welcome = lazy(() => import('@/pages/welcome'));
 const Dashboard = lazy(() => import('@/pages/dashboard'));
-const Recipes = lazy(() => import('@/pages/bread-recipes'));
+const Recipes = lazy(() => import('@/pages/recipes'));
 const Purchases = lazy(() => import('@/pages/purchases'));
 const Sales = lazy(() => import('@/pages/sales'));
 

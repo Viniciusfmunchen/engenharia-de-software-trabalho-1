@@ -2,53 +2,42 @@ import { FormSelectField, FormTextField } from '@/components/forms/fields';
 import FormModal from '@/components/forms/form-modal';
 import type { FormOption } from '@/constants/formOptions';
 import { messages } from '@/constants/messages';
-import {
-  breadRecipeSchema,
-  type BreadRecipeFormInput,
-  type BreadRecipeFormValues,
-} from '@/schemas/bakerySchemas';
-import type { Ingredient } from '@/types/bakery';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, IconButton, Stack, Typography } from '@mui/material';
 import { useFieldArray, useForm } from 'react-hook-form';
+import type { Recipe } from '@/schemas/recipe';
+import { recipeSchema } from '@/schemas/bakerySchemas';
 
-interface BreadRecipeFormModalProps {
+interface RecipeFormProps {
   open: boolean;
-  ingredients: Ingredient[];
   onClose: () => void;
-  onSubmit: (values: BreadRecipeFormValues) => void;
+  onSubmit: (values: Recipe) => void;
 }
 
-const getDefaultValues = (ingredients: Ingredient[]): BreadRecipeFormInput => ({
+const getDefaultValues = (): Recipe => ({
+  recipeId: 0,
   name: '',
-  salePrice: 0,
-  yieldUnits: 1,
-  preparationTimeMinutes: 60,
-  ingredients: [
-    {
-      ingredientId: ingredients[0]?.id ?? 0,
-      quantity: 1,
-    },
-  ],
+  ingredients: [],
+  preparationTime: 60,
+  salePrice: 12,
+  yieldUnits: 20,
 });
 
-const BreadRecipeFormModal = ({
+const RecipeForm = ({
   open,
-  ingredients,
   onClose,
   onSubmit,
-}: BreadRecipeFormModalProps) => {
-  const defaultValues = getDefaultValues(ingredients);
-  const ingredientOptions: FormOption<number>[] = ingredients.map((ingredient) => ({
-    value: ingredient.id,
-    label: `${ingredient.name} (${ingredient.unit})`,
-  }));
-  const form = useForm<BreadRecipeFormInput, unknown, BreadRecipeFormValues>({
-    resolver: zodResolver(breadRecipeSchema),
+}: RecipeFormProps) => {
+  const defaultValues = getDefaultValues();
+  const { data: ingredients } = use
+
+  const form = useForm<Recipe>({
+    resolver: zodResolver(recipeSchema),
     defaultValues,
   });
+
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'ingredients',
@@ -59,7 +48,7 @@ const BreadRecipeFormModal = ({
     onClose();
   };
 
-  const handleSubmit = (values: BreadRecipeFormValues) => {
+  const handleSubmit = (values: Recipe) => {
     onSubmit(values);
     handleClose();
   };
@@ -79,7 +68,7 @@ const BreadRecipeFormModal = ({
       onSubmit={handleSubmit}
       maxWidth="lg"
     >
-      <FormTextField<BreadRecipeFormInput>
+      <FormTextField
         name="name"
         label={messages.forms.recipe.name}
         size="small"
@@ -158,4 +147,4 @@ const BreadRecipeFormModal = ({
   );
 };
 
-export default BreadRecipeFormModal;
+export default RecipeForm;

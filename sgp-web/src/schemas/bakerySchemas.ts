@@ -57,7 +57,7 @@ export const recipeIngredientSchema = z.object({
   quantity: positiveNumber,
 });
 
-export const breadRecipeSchema = z.object({
+export const recipeSchema = z.object({
   name: requiredString,
   salePrice: positiveNumber,
   yieldUnits: positiveInteger,
@@ -84,7 +84,7 @@ export type PurchaseFormInput = z.input<typeof purchaseSchema>;
 export type PurchaseFormValues = z.output<typeof purchaseSchema>;
 export type SaleFormInput = z.input<typeof saleSchema>;
 export type SaleFormValues = z.output<typeof saleSchema>;
-export type BreadRecipeFormInput = z.input<typeof breadRecipeSchema>;
-export type BreadRecipeFormValues = z.output<typeof breadRecipeSchema>;
+export type RecipeFormInput = z.input<typeof recipeSchema>;
+export type RecipeFormValues = z.output<typeof recipeSchema>;
 export type SupplierFormValues = z.output<typeof supplierSchema>;
 export type CustomerFormValues = z.output<typeof customerSchema>;
