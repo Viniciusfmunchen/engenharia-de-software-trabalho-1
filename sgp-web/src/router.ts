@@ -23,7 +23,7 @@ export const router = createBrowserRouter([
         Component: Dashboard,
       },
       {
-        path: 'bread-recipes',
+        path: 'recipes',
         Component: Recipes,
       },
       {

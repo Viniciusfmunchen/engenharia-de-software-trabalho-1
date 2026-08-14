@@ -3,28 +3,23 @@ import PageLayout from "@/layouts/page";
 import { bakeryColors } from "@/theme";
 import { Button, InputAdornment, Stack, TextField, Typography } from "@mui/material";
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
-import { createCrudService } from "@/services/crud";
-
-import { useApiQuery } from "@/hooks/use-api-query";
-import type { Recipe } from "@/types/recipe";
-import type { RecipeFormValues } from "@/schemas/bakerySchemas";
 import RecipeList from "@/components/recipe/list";
 import Container from "@/components/ui/container";
 import SearchIcon from '@mui/icons-material/Search';
+import React, { useState } from "react";
+import { useGetPageable } from "@/hooks/query";
+import { ENDPOINTS } from "@/constants/endpoints";
+import type { Receita } from "@/schemas/recipe";
 import RecipePreview from "@/components/recipe/preview";
-import React from "react";
+import FormularioReceita from "@/components/recipe/form";
 
-const Recipes = () => {
-    /* const [isFormOpen, setIsFormOpen] = useState(false); */
+
+const Receitas = () => {
+    const [isFormOpen, setIsFormOpen] = useState(false);
     const [filter, setFilter] = React.useState<Record<string, string>>({});
-    const recipeService = createCrudService<Recipe, RecipeFormValues>('recipe');
-    const { data: recipes } = useApiQuery<Recipe[]>(
-        ['recipes', filter],
-        () => recipeService.list(filter),
-        {
-            select: (response: any) => response.content as Recipe[],
-        }
-    );
+    const { data: receitas } = useGetPageable<Receita>({ endpoint: ENDPOINTS.RECEITA.BASE })
+
+    console.log('receitas', receitas)
 
     return (
         <PageLayout
@@ -40,7 +35,7 @@ const Recipes = () => {
                             bgcolor: bakeryColors.sidebarSelectedHover,
                         },
                     }}
-                    onClick={() => {/* setIsFormOpen(true) */ }}
+                    onClick={() => { setIsFormOpen(true) }}
                 >
                     {messages.actions.addRecipe}
                 </Button>
@@ -66,9 +61,9 @@ const Recipes = () => {
                         }}
                     />
                 </Container>
-                {recipes ? (
+                {receitas ? (
                     <Stack direction={{ xs: 'column', lg: 'row' }} sx={{ gap: 2, alignItems: 'flex-start', minHeight: 0 }}>
-                        <RecipeList recipes={recipes || []} />
+                        <RecipeList receitas={receitas || []} />
                         <RecipePreview />
                     </Stack>
                 ) : (
@@ -80,17 +75,15 @@ const Recipes = () => {
                         </Stack>
                     </Container>
                 )}
-
-                {/* <BreadRecipeFormModal
-                    open={isFormOpen}
-                    ingredients={breadIngredients}
-                    onClose={() => setIsFormOpen(false)}
-                    onSubmit={() => { }}
-                /> */}
             </Stack>
+            <FormularioReceita
+                open={isFormOpen}
+                onClose={() => setIsFormOpen(false)}
+                onSubmit={() => { }}
+            />
         </PageLayout>
     )
 
 }
 
-export default Recipes;
+export default Receitas;

@@ -1,19 +1,14 @@
-import type { Ingredient } from "@/types/ingredient"
+
+import type { IngredienteReceita } from "@/schemas/ingredient"
 import { Stack, Typography } from "@mui/material"
 
-interface TempIngredient {
-    id: number;
-    ingredient: Ingredient;
-    quantity: number;
-}
-
-export const RecipeIngredientsList = ({ ingredients }: { ingredients: TempIngredient[] }) => {
+export const RecipeIngredientsList = ({ ingredientes }: { ingredientes: IngredienteReceita[] }) => {
     return (
         <Stack component="ul" sx={{ gap: 2, listStyle: 'none', p: 0 }}>
-            {ingredients.map((ingredient) => (
-                console.log(ingredient),
+            {ingredientes.map((ingrediente) => (
+                console.log(ingrediente),
                 <Stack
-                    key={ingredient.ingredient.ingredientId}
+                    key={ingrediente.idIngrediente}
                     component="li"
                     direction={{ xs: 'column', sm: 'row' }}
                     sx={{
@@ -24,13 +19,13 @@ export const RecipeIngredientsList = ({ ingredients }: { ingredients: TempIngred
                     }}
                 >
                     <Stack>
-                        <Typography variant="body1">{ingredient.ingredient.name}</Typography>
+                        <Typography variant="body1">{ingrediente.nomeIngrediente}</Typography>
                         <Typography variant="caption" color="text.secondary">
-                            {ingredient.ingredient.category.name}
+                            {ingrediente.categoriaIngrediente.nomeCategoria}
                         </Typography>
                     </Stack>
                     <Typography variant="subtitle2">
-                        {ingredient.quantity.toLocaleString('pt-BR')} {ingredient.ingredient.measuringUnit.symbol}
+                        {ingrediente.quantidade.toLocaleString('pt-BR')} {ingrediente.unidadeIngrediente.abreviacaoUnidade}
                     </Typography>
                 </Stack>
             ))}

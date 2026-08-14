@@ -1,46 +1,60 @@
 import { FormSelectField, FormTextField } from '@/components/forms/fields';
 import FormModal from '@/components/forms/form-modal';
-import type { FormOption } from '@/constants/formOptions';
 import { messages } from '@/constants/messages';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, IconButton, Stack, Typography } from '@mui/material';
 import { useFieldArray, useForm } from 'react-hook-form';
-import type { Recipe } from '@/schemas/recipe';
-import { recipeSchema } from '@/schemas/bakerySchemas';
+import { criarReceitaSchema, type CriarReceita, type Receita } from '@/schemas/recipe';
+import { useGetPageable } from '@/hooks/query';
+import { ENDPOINTS } from '@/constants/endpoints';
+import type { Ingrediente } from '@/schemas/ingredient';
+import { usePost } from '@/hooks/mutation';
+import { useQueryClient } from '@tanstack/react-query';
 
-interface RecipeFormProps {
+interface Props {
   open: boolean;
   onClose: () => void;
-  onSubmit: (values: Recipe) => void;
+  onSubmit: (values: CriarReceita) => void;
 }
 
-const getDefaultValues = (): Recipe => ({
-  recipeId: 0,
-  name: '',
-  ingredients: [],
-  preparationTime: 60,
-  salePrice: 12,
-  yieldUnits: 20,
+const getDefaultValues = (): CriarReceita => ({
+  nomeReceita: '',
+  rendimento: 0,
+  tempoPreparacao: 0,
+  precoVenda: 0,
+  ingredientes: [],
 });
 
-const RecipeForm = ({
+const FormularioReceita = ({
   open,
   onClose,
   onSubmit,
-}: RecipeFormProps) => {
+}: Props) => {
   const defaultValues = getDefaultValues();
-  const { data: ingredients } = use
+  const { data: ingredientes } = useGetPageable<Ingrediente>({ endpoint: ENDPOINTS.INGREDIENTE.BASE })
 
-  const form = useForm<Recipe>({
-    resolver: zodResolver(recipeSchema),
+  const queryClient = useQueryClient();
+
+  const criarReceitaMutation = usePost<Receita, CriarReceita>({
+    onSuccess: (dadosCriados) => {
+      console.log('Receita criada com sucesso:', dadosCriados);
+      queryClient.invalidateQueries({ queryKey: [ENDPOINTS.RECEITA.BASE] });
+    },
+    onError: (erro) => {
+      console.error('Erro ao salvar receita:', erro);
+    }
+  });
+
+  const form = useForm<CriarReceita>({
+    resolver: zodResolver(criarReceitaSchema),
     defaultValues,
   });
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: 'ingredients',
+    name: 'ingredientes',
   });
 
   const handleClose = () => {
@@ -48,15 +62,15 @@ const RecipeForm = ({
     onClose();
   };
 
-  const handleSubmit = (values: Recipe) => {
-    onSubmit(values);
+  const handleSubmit = (values: CriarReceita) => {
+    criarReceitaMutation.mutate({ endpoint: ENDPOINTS.RECEITA.BASE, payload: values })
     handleClose();
   };
 
   const addIngredient = () =>
     append({
-      ingredientId: ingredients[0]?.id ?? 0,
-      quantity: 1,
+      idIngrediente: ingredientes[0]?.idIngrediente ?? 0,
+      quantidade: 1,
     });
 
   return (
@@ -69,7 +83,7 @@ const RecipeForm = ({
       maxWidth="lg"
     >
       <FormTextField
-        name="name"
+        name="nomeReceita"
         label={messages.forms.recipe.name}
         size="small"
         autoFocus
@@ -77,24 +91,24 @@ const RecipeForm = ({
       />
 
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 2 }}>
-        <FormTextField<BreadRecipeFormInput>
-          name="salePrice"
+        <FormTextField
+          name="precoVenda"
           label={messages.forms.recipe.salePrice}
           type="number"
           size="small"
           fullWidth
           slotProps={{ htmlInput: { min: 0, step: '0.01' } }}
         />
-        <FormTextField<BreadRecipeFormInput>
-          name="yieldUnits"
+        <FormTextField
+          name="rendimento"
           label={messages.forms.recipe.yieldUnits}
           type="number"
           size="small"
           fullWidth
           slotProps={{ htmlInput: { min: 1, step: 1 } }}
         />
-        <FormTextField<BreadRecipeFormInput>
-          name="preparationTimeMinutes"
+        <FormTextField
+          name="tempoPreparacao"
           label={messages.forms.recipe.preparationTimeMinutes}
           type="number"
           size="small"
@@ -117,15 +131,15 @@ const RecipeForm = ({
             direction={{ xs: 'column', sm: 'row' }}
             sx={{ alignItems: { sm: 'flex-start' }, gap: 1 }}
           >
-            <FormSelectField<BreadRecipeFormInput>
-              name={`ingredients.${index}.ingredientId`}
+            <FormSelectField
+              name={`ingredientes.${index}.ingredientId`}
               label={messages.forms.recipe.ingredient}
-              options={ingredientOptions}
+              options={ingredientes.map((ingrediente) => ({ value: ingrediente.idIngrediente, label: ingrediente.nomeIngrediente }))}
               size="small"
               fullWidth
             />
-            <FormTextField<BreadRecipeFormInput>
-              name={`ingredients.${index}.quantity`}
+            <FormTextField
+              name={`ingredientes.${index}.quantidade`}
               label={messages.common.quantity}
               type="number"
               size="small"
@@ -147,4 +161,4 @@ const RecipeForm = ({
   );
 };
 
-export default RecipeForm;
+export default FormularioReceita;

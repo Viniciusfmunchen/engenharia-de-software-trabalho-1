@@ -1,38 +1,30 @@
-import { Button, Chip, Divider, Stack, TextField, Typography } from "@mui/material";
+import { Button, Chip, Divider, Stack, Typography } from "@mui/material";
 import { useSearchParams } from "react-router";
 import Container from "../../ui/container";
-import { useApiQuery } from "@/hooks/use-api-query";
-import type { Recipe } from "@/types/recipe";
-import type { RecipeFormValues } from "@/schemas/bakerySchemas";
-import { createCrudService } from "@/services/crud";
 import { messages } from "@/constants/messages";
 import { formatCurrency } from "@/mock/operationsMock";
 import { Edit } from "@mui/icons-material";
-import { RecipeIngredientsList } from "../ingredients-list";
 import ProductionSimulation from "./production-simulation";
+import { useGet } from "@/hooks/query";
+import { ENDPOINTS } from "@/constants/endpoints";
+import type { Receita } from "@/schemas/recipe";
+import { RecipeIngredientsList } from "../ingredients-list";
 import RecipeSummary from "../summary";
 
 const RecipePreview = () => {
     const [searchParams] = useSearchParams();
 
     const selectedRecipeId = searchParams.get('recipeId');
-    const recipeService = createCrudService<Recipe, RecipeFormValues>('recipe');
-    const { data: recipe, isLoading } = useApiQuery<Recipe>(
-        ['recipes', selectedRecipeId],
-        () => recipeService.getById(Number(selectedRecipeId)),
-        {
-            enabled: !!selectedRecipeId,
-        }
-    );
+    const { data: receita, isLoading } = useGet<Receita>({ endpoint: `${ENDPOINTS.RECEITA.BASE}/${selectedRecipeId}`, enabled: !!selectedRecipeId })
 
-    if (!recipe || !selectedRecipeId) return '#Nenhuma receita selecionada#\n#Selecione uma receita na lista à esquerda para visualizar os detalhes.#';
+    if (!receita || !selectedRecipeId) return '#Nenhuma receita selecionada#\n#Selecione uma receita na lista à esquerda para visualizar os detalhes.#';
 
     if (isLoading) return '#Carregando receita...#';
 
     return (
         <Container
-            title={recipe.name}
-            subtitle={`${recipe.yieldUnits ?? 0} ${messages.pages.recipes.unitsPerRecipeFull}`}
+            title={receita.nomeReceita}
+            subtitle={`${receita.rendimento ?? 0} ${messages.pages.recipes.unitsPerRecipeFull}`}
             action={
                 <Button
                     size="small"
@@ -45,9 +37,9 @@ const RecipePreview = () => {
             sx={{ width: '100%', height: '100%' }}
             contentSx={{ gap: 1 }}
         >
-            <RecipeSummary recipe={recipe} />
+            <RecipeSummary receita={receita} />
             <Divider />
-            {recipe.ingredients.length > 0 && (
+            {receita.ingredientes.length > 0 && (
                 <Stack>
                     <Stack
                         direction="row"
@@ -60,7 +52,7 @@ const RecipePreview = () => {
                             label={`${messages.pages.recipes.estimatedProfitPerUnit} ${formatCurrency(0)}`}
                         />
                     </Stack>
-                    <RecipeIngredientsList ingredients={recipe.ingredients} />
+                    <RecipeIngredientsList ingredientes={receita.ingredientes} />
                 </Stack>)}
             <ProductionSimulation />
         </Container >

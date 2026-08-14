@@ -1,6 +1,7 @@
 import Container from '@/components/ui/container';
 import { messages } from '@/constants/messages';
 import { formatCurrencyFromCents } from '@/mock/breadRecipesMock';
+import type { Receita } from '@/schemas/recipe';
 import { bakeryColors } from '@/theme';
 import type { Recipe } from '@/types/recipe';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -26,10 +27,10 @@ export const formatTime = (minutes: number) => {
 };
 
 interface Props {
-    recipes: Recipe[];
+    receitas: Receita[];
 }
 
-const RecipeList = ({ recipes }: Props) => {
+const RecipeList = ({ receitas }: Props) => {
 
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -68,7 +69,7 @@ const RecipeList = ({ recipes }: Props) => {
                 }}
             >
                 <Typography variant="caption" color="text.secondary">
-                    {recipes.length} {messages.pages.recipes.foundSuffix}
+                    {receitas.length} {messages.pages.recipes.foundSuffix}
                 </Typography>
 
                 <Typography variant="caption" color="text.secondary">
@@ -76,12 +77,12 @@ const RecipeList = ({ recipes }: Props) => {
                 </Typography>
             </Stack>
 
-            {recipes?.map((recipe) => {
-                const isSelected = selectedRecipeId === String(recipe.recipeId);
+            {receitas?.map((recipe) => {
+                const isSelected = selectedRecipeId === String(recipe.idReceita);
 
                 return (
                     <Container
-                        key={recipe.recipeId}
+                        key={recipe.idReceita}
                         sx={{
                             bgcolor: isSelected ? '#fffaf2' : 'background.paper',
                             borderColor: isSelected ? bakeryColors.accent : '#eadfce',
@@ -97,10 +98,10 @@ const RecipeList = ({ recipes }: Props) => {
                         <Stack
                             role="button"
                             tabIndex={0}
-                            onClick={() => setSelectedRecipeId(recipe.recipeId)}
+                            onClick={() => setSelectedRecipeId(recipe.idReceita)}
                             onKeyDown={(event) => {
                                 if (event.key === 'Enter' || event.key === ' ') {
-                                    setSelectedRecipeId(recipe.recipeId);
+                                    setSelectedRecipeId(recipe.idReceita);
                                 }
                             }}
                             sx={{ gap: 1, outline: 0 }}
@@ -110,24 +111,24 @@ const RecipeList = ({ recipes }: Props) => {
                                 sx={{ alignItems: 'flex-start', justifyContent: 'space-between', gap: 1 }}
                             >
                                 <Stack sx={{ gap: 0.5 }}>
-                                    <Typography variant="h6">{recipe.name}</Typography>
+                                    <Typography variant="h6">{recipe.nomeReceita}</Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        {recipe.yieldUnits ?? 0} {messages.pages.recipes.unitsPerRecipe}
+                                        {recipe.rendimento ?? 0} {messages.pages.recipes.unitsPerRecipe}
                                     </Typography>
                                 </Stack>
-                                <Chip size="small" label={formatCurrencyFromCents(recipe.salePrice)} />
+                                <Chip size="small" label={formatCurrencyFromCents(recipe.precoVenda)} />
                             </Stack>
 
                             <Stack direction="row" sx={{ gap: 1, flexWrap: 'wrap' }}>
                                 <Chip
                                     size="small"
                                     icon={<AccessTimeIcon />}
-                                    label={formatTime(recipe.preparationTime)}
+                                    label={formatTime(recipe.tempoPreparacao)}
                                 />
                                 <Chip
                                     size="small"
                                     icon={<Inventory2Icon />}
-                                    label={`${recipe.ingredients.length} ${messages.common.ingredients.toLocaleLowerCase('pt-BR')}`}
+                                    label={`${recipe.ingredientes.length} ${messages.common.ingredients.toLocaleLowerCase('pt-BR')}`}
                                 />
                             </Stack>
                         </Stack>

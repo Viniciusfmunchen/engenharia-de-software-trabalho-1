@@ -1,38 +1,53 @@
-import { http } from '../lib/http';
+import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 
-export type ResourceId = number | string;
-export type QueryParams = Record<string, boolean | number | string | undefined>;
 
-export interface CrudService<TEntity, TCreate, TUpdate = Partial<TCreate>> {
-  list(params?: QueryParams): Promise<TEntity[]>;
-  getById(id: ResourceId): Promise<TEntity>;
-  create(payload: TCreate): Promise<TEntity>;
-  update(id: ResourceId, payload: TUpdate): Promise<TEntity>;
-  remove(id: ResourceId): Promise<void>;
+export interface SpringPageResponse<T> {
+  content?: T[];
+  page?: {
+    totalElements: number;
+    totalPages: number;
+    size: number;
+    number: number;
+  };
+  totalElements?: number;
 }
 
-export function createCrudService<TEntity, TCreate, TUpdate = Partial<TCreate>>(
-  resource: string,
-): CrudService<TEntity, TCreate, TUpdate> {
-  return {
-    async list(params) {
-      const { data } = await http.get<TEntity[]>(`http://localhost:8080/${resource}`, { params });
-      return data;
-    },
-    async getById(id) {
-      const { data } = await http.get<TEntity>(`http://localhost:8080/${resource}/${id}`);
-      return data;
-    },
-    async create(payload) {
-      const { data } = await http.post<TEntity>(`http://localhost:8080/${resource}`, payload);
-      return data;
-    },
-    async update(id, payload) {
-      const { data } = await http.put<TEntity>(`http://localhost:8080/${resource}/${id}`, payload);
-      return data;
-    },
-    async remove(id) {
-      await http.delete(`http://localhost:8080/${resource}/${id}`);
-    },
-  };
+export class Service<T> {
+  private api: AxiosInstance;
+
+  constructor(api: AxiosInstance) {
+    this.api = api;
+  }
+
+  async getBy(endpoint: string, config?: AxiosRequestConfig): Promise<T> {
+    const { data } = await this.api.get<T>(endpoint, config);
+    return data;
+  }
+
+  async getPageable(
+    endpoint: string,
+    params?: Record<string, unknown>
+  ): Promise<SpringPageResponse<T> | T[]> {
+    const { data } = await this.api.get(endpoint, { params });
+    return data;
+  }
+
+  async post<TPayload = Partial<T>>(endpoint: string, payload: TPayload): Promise<T> {
+    const { data } = await this.api.post<T>(endpoint, payload);
+    return data;
+  }
+
+  async put<TPayload = Partial<T>>(endpoint: string, payload: TPayload): Promise<T> {
+    const { data } = await this.api.put<T>(endpoint, payload);
+    return data;
+  }
+
+  async patch<TPayload = Partial<T>>(endpoint: string, payload: TPayload): Promise<T> {
+    const { data } = await this.api.patch<T>(endpoint, payload);
+    return data;
+  }
+
+  async delete(endpoint: string): Promise<void> {
+    await this.api.delete(endpoint);
+  }
 }

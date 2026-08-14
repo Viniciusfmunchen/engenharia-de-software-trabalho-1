@@ -1,4 +1,3 @@
-import Chat from '@/components/chat';
 import Sidebar from '@/components/menus/sidebar';
 import { messages } from '@/constants/messages';
 import { COLLAPSED_SIDEBAR_WIDTH, SIDEBAR_WIDTH } from '@/constants/ui';
@@ -42,7 +41,7 @@ const AppLayout = () => {
           {messages.app.eyebrow}
         </Typography>
         <Outlet />
-        <Chat />
+        {/* <Chat /> */}
       </Stack>
     </Stack>
   );
