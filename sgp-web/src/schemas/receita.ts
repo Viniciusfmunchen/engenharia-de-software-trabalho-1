@@ -1,5 +1,5 @@
 import { mensagens } from '@/constantes/mensagens';
-import z from 'zod';
+import { z } from 'zod';
 import { adicionarIngredienteReceitaSchema, ingredienteReceitaSchema } from './ingrediente';
 
 export const receitaSchema = z.object({
@@ -36,7 +36,7 @@ export const criarReceitaSchema = receitaSchema
 
 export type CriarReceita = z.infer<typeof criarReceitaSchema>;
 
-export type AtualizarReceita = z.infer<typeof receitaSchema>;
+export type AtualizarReceita = Receita;
 
 export const simularProducaoSchema = z.object({
   idReceita: z.number(),

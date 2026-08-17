@@ -1,4 +1,4 @@
-export const obterProximoId = <T extends Record<string, unknown>>(
+export const obterProximoId = <T extends Record<string, any>>(
   itens: T[],
   campoId: keyof T = 'id' as keyof T,
 ): number => {

@@ -4,13 +4,12 @@ import { opcoesStatusCompra, type OpcaoFormulario } from '@/constantes/opcoes-fo
 import { mensagens } from '@/constantes/mensagens';
 import {
   compraSchema,
-  type FormularioCompraEntrada,
-  type FormularioCompraValores,
+  type CriarCompra,
 } from '@/schemas/compra';
 import type { Fornecedor } from '@/tipos/fornecedor';
 import type { Ingrediente } from '@/tipos/ingrediente';
 import { obterDataHojeInput } from '@/utils/data';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { resolverZod } from '@/utils/resolver';
 import { Stack } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
@@ -21,14 +20,14 @@ interface PropriedadesModalFormularioCompra {
   fornecedores: Fornecedor[];
   aoFechar?: () => void;
   onClose?: () => void;
-  aoSubmeter?: (valores: FormularioCompraValores) => void;
-  onSubmit?: (valores: FormularioCompraValores) => void;
+  aoSubmeter?: (valores: CriarCompra) => void;
+  onSubmit?: (valores: CriarCompra) => void;
 }
 
 const obterValoresPadrao = (
   ingredientes: Ingrediente[],
   fornecedores: Fornecedor[],
-): FormularioCompraEntrada => ({
+): CriarCompra => ({
   data: obterDataHojeInput(),
   nomeFornecedor: fornecedores[0]?.nome ?? '',
   idIngrediente: ingredientes[0]?.idIngrediente ?? 0,
@@ -61,8 +60,8 @@ const ModalFormularioCompra = ({
     label: fornecedor.nome,
   }));
 
-  const formulario = useForm<FormularioCompraEntrada, unknown, FormularioCompraValores>({
-    resolver: zodResolver(compraSchema),
+  const formulario = useForm<CriarCompra>({
+    resolver: resolverZod(compraSchema),
     defaultValues: valoresPadrao,
   });
 
@@ -71,7 +70,7 @@ const ModalFormularioCompra = ({
     fechar();
   };
 
-  const manipularSubmissao = (valores: FormularioCompraValores) => {
+  const manipularSubmissao = (valores: CriarCompra) => {
     submeter(valores);
     manipularFechamento();
   };
@@ -85,7 +84,7 @@ const ModalFormularioCompra = ({
       aoSubmeter={manipularSubmissao}
     >
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 2 }}>
-        <CampoTextoFormulario<FormularioCompraEntrada>
+        <CampoTextoFormulario<CriarCompra>
           name="data"
           label={mensagens.common.date}
           type="date"
@@ -94,7 +93,7 @@ const ModalFormularioCompra = ({
           autoFocus
           slotProps={{ inputLabel: { shrink: true } }}
         />
-        <CampoSelecaoFormulario<FormularioCompraEntrada>
+        <CampoSelecaoFormulario<CriarCompra>
           name="status"
           label={mensagens.common.status}
           options={opcoesStatusCompra}
@@ -103,7 +102,7 @@ const ModalFormularioCompra = ({
         />
       </Stack>
 
-      <CampoSelecaoFormulario<FormularioCompraEntrada>
+      <CampoSelecaoFormulario<CriarCompra>
         name="nomeFornecedor"
         label={mensagens.forms.purchase.supplierName}
         options={opcoesFornecedores}
@@ -111,7 +110,7 @@ const ModalFormularioCompra = ({
         fullWidth
       />
 
-      <CampoSelecaoFormulario<FormularioCompraEntrada>
+      <CampoSelecaoFormulario<CriarCompra>
         name="idIngrediente"
         label={mensagens.forms.purchase.ingredient}
         options={opcoesIngredientes}
@@ -120,7 +119,7 @@ const ModalFormularioCompra = ({
       />
 
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 2 }}>
-        <CampoTextoFormulario<FormularioCompraEntrada>
+        <CampoTextoFormulario<CriarCompra>
           name="quantidade"
           label={mensagens.common.quantity}
           type="number"
@@ -128,7 +127,7 @@ const ModalFormularioCompra = ({
           fullWidth
           slotProps={{ htmlInput: { min: 0, step: '0.01' } }}
         />
-        <CampoTextoFormulario<FormularioCompraEntrada>
+        <CampoTextoFormulario<CriarCompra>
           name="custoUnitario"
           label={mensagens.forms.purchase.unitCost}
           type="number"

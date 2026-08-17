@@ -17,8 +17,8 @@ import {
   obterReceitaPorId,
   vendasMock,
 } from '@/mocks/operacoes-mock';
-import type { FormularioClienteValores } from '@/schemas/cliente';
-import type { FormularioVendaValores } from '@/schemas/venda';
+import type { CriarCliente } from '@/schemas/cliente';
+import type { CriarVenda } from '@/schemas/venda';
 import { coresPadaria } from '@/tema';
 import type { Cliente } from '@/tipos/cliente';
 import type { Venda } from '@/tipos/venda';
@@ -100,7 +100,7 @@ const Vendas = () => {
     },
   ];
 
-  const manipularAdicionarVenda = (valores: FormularioVendaValores) => {
+  const manipularAdicionarVenda = (valores: CriarVenda) => {
     const novaVenda: Venda = {
       idVenda: obterProximoId(vendasMock, 'idVenda'),
       data: valores.data,
@@ -114,7 +114,7 @@ const Vendas = () => {
     setVendas([...vendasMock]);
   };
 
-  const manipularAdicionarCliente = (valores: FormularioClienteValores) => {
+  const manipularAdicionarCliente = (valores: CriarCliente) => {
     const novoCliente: Cliente = {
       idCliente: obterProximoId(clientes, 'idCliente'),
       nome: valores.nome,

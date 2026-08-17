@@ -11,20 +11,19 @@ import {
 import type { ReactNode } from 'react';
 
 interface PropriedadesModalFormulario<
-  TValoresCampos extends FieldValues,
-  TValoresTransformados extends FieldValues = TValoresCampos,
+  TValoresCampos extends FieldValues
 > {
   aberto?: boolean;
   open?: boolean;
   titulo?: string;
   title?: string;
-  formulario?: UseFormReturn<TValoresCampos, unknown, TValoresTransformados>;
-  form?: UseFormReturn<TValoresCampos, unknown, TValoresTransformados>;
+  formulario?: UseFormReturn<TValoresCampos>;
+  form?: UseFormReturn<TValoresCampos>;
   children: ReactNode;
   aoFechar?: () => void;
   onClose?: () => void;
-  aoSubmeter?: SubmitHandler<TValoresTransformados>;
-  onSubmit?: SubmitHandler<TValoresTransformados>;
+  aoSubmeter?: SubmitHandler<TValoresCampos>;
+  onSubmit?: SubmitHandler<TValoresCampos>;
   rotuloSubmissao?: string;
   submitLabel?: string;
   larguraMaxima?: 'sm' | 'md' | 'lg';
@@ -33,7 +32,6 @@ interface PropriedadesModalFormulario<
 
 const ModalFormulario = <
   TValoresCampos extends FieldValues,
-  TValoresTransformados extends FieldValues = TValoresCampos,
 >({
   aberto,
   open,
@@ -50,11 +48,11 @@ const ModalFormulario = <
   submitLabel = mensagens.common.save,
   larguraMaxima,
   maxWidth = 'md',
-}: PropriedadesModalFormulario<TValoresCampos, TValoresTransformados>) => {
+}: PropriedadesModalFormulario<TValoresCampos>) => {
   const estaAberto = aberto ?? open ?? false;
   const textoTitulo = titulo ?? title ?? '';
-  const fechar = aoFechar ?? onClose ?? (() => {});
-  const submeter = aoSubmeter ?? onSubmit ?? (() => {});
+  const fechar = aoFechar ?? onClose ?? (() => { });
+  const submeter = aoSubmeter ?? onSubmit ?? (() => { });
   const instanciaFormulario = (formulario ?? form)!;
   const textoBotao = rotuloSubmissao ?? submitLabel;
   const tamanho = larguraMaxima ?? maxWidth;

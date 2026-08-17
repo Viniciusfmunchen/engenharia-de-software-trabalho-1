@@ -7,10 +7,9 @@ import {
 import { mensagens } from '@/constantes/mensagens';
 import {
   formularioIngredienteSchema,
-  type FormularioIngredienteEntrada,
-  type FormularioIngredienteValores,
+  type CriarIngrediente,
 } from '@/schemas/ingrediente';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { resolverZod } from '@/utils/resolver';
 import { Stack } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
@@ -19,11 +18,11 @@ interface PropriedadesModalFormularioIngrediente {
   open?: boolean;
   aoFechar?: () => void;
   onClose?: () => void;
-  aoSubmeter?: (valores: FormularioIngredienteValores) => void;
-  onSubmit?: (valores: FormularioIngredienteValores) => void;
+  aoSubmeter?: (valores: CriarIngrediente) => void;
+  onSubmit?: (valores: CriarIngrediente) => void;
 }
 
-const valoresPadrao: FormularioIngredienteEntrada = {
+const valoresPadrao: CriarIngrediente = {
   nomeIngrediente: '',
   categoria: 'farinha',
   unidade: 'g',
@@ -44,8 +43,8 @@ const ModalFormularioIngrediente = ({
   const fechar = aoFechar ?? onClose ?? (() => {});
   const submeter = aoSubmeter ?? onSubmit ?? (() => {});
 
-  const formulario = useForm<FormularioIngredienteEntrada, unknown, FormularioIngredienteValores>({
-    resolver: zodResolver(formularioIngredienteSchema),
+  const formulario = useForm<CriarIngrediente>({
+    resolver: resolverZod(formularioIngredienteSchema),
     defaultValues: valoresPadrao,
   });
 
@@ -54,20 +53,20 @@ const ModalFormularioIngrediente = ({
     fechar();
   };
 
-  const manipularSubmissao = (valores: FormularioIngredienteValores) => {
+  const manipularSubmissao = (valores: CriarIngrediente) => {
     submeter(valores);
     manipularFechamento();
   };
 
   return (
-    <ModalFormulario
+    <ModalFormulario<CriarIngrediente>
       aberto={estaAberto}
       titulo={mensagens.forms.ingredient.title}
       formulario={formulario}
       aoFechar={manipularFechamento}
       aoSubmeter={manipularSubmissao}
     >
-      <CampoTextoFormulario<FormularioIngredienteEntrada>
+      <CampoTextoFormulario<CriarIngrediente>
         name="nomeIngrediente"
         label={mensagens.forms.ingredient.name}
         size="small"
@@ -76,14 +75,14 @@ const ModalFormularioIngrediente = ({
       />
 
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 2 }}>
-        <CampoSelecaoFormulario<FormularioIngredienteEntrada>
+        <CampoSelecaoFormulario<CriarIngrediente>
           name="categoria"
           label={mensagens.forms.ingredient.category}
           options={opcoesCategoriaIngrediente}
           size="small"
           fullWidth
         />
-        <CampoSelecaoFormulario<FormularioIngredienteEntrada>
+        <CampoSelecaoFormulario<CriarIngrediente>
           name="unidade"
           label={mensagens.forms.ingredient.unit}
           options={opcoesUnidadeIngrediente}
@@ -93,7 +92,7 @@ const ModalFormularioIngrediente = ({
       </Stack>
 
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 2 }}>
-        <CampoTextoFormulario<FormularioIngredienteEntrada>
+        <CampoTextoFormulario<CriarIngrediente>
           name="precoPorUnidade"
           label={mensagens.forms.ingredient.costPerUnit}
           type="number"
@@ -101,7 +100,7 @@ const ModalFormularioIngrediente = ({
           fullWidth
           slotProps={{ htmlInput: { min: 0, step: '0.0001' } }}
         />
-        <CampoTextoFormulario<FormularioIngredienteEntrada>
+        <CampoTextoFormulario<CriarIngrediente>
           name="estoqueAtual"
           label={mensagens.forms.ingredient.stockQuantity}
           type="number"
@@ -109,7 +108,7 @@ const ModalFormularioIngrediente = ({
           fullWidth
           slotProps={{ htmlInput: { min: 0, step: '0.01' } }}
         />
-        <CampoTextoFormulario<FormularioIngredienteEntrada>
+        <CampoTextoFormulario<CriarIngrediente>
           name="estoqueMinimo"
           label={mensagens.forms.ingredient.minStockQuantity}
           type="number"

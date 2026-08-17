@@ -10,5 +10,4 @@ export const fornecedorSchema = z.object({
   nomeContato: textoObrigatorio,
 });
 
-export type FormularioFornecedorEntrada = z.input<typeof fornecedorSchema>;
-export type FormularioFornecedorValores = z.output<typeof fornecedorSchema>;
+export type CriarFornecedor = z.infer<typeof fornecedorSchema>;

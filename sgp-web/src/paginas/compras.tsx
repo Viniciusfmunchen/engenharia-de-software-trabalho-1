@@ -14,8 +14,8 @@ import {
   formatarMoeda,
   obterLinhasCompras,
 } from '@/mocks/operacoes-mock';
-import type { FormularioCompraValores } from '@/schemas/compra';
-import type { FormularioFornecedorValores } from '@/schemas/fornecedor';
+import type { CriarCompra } from '@/schemas/compra';
+import type { CriarFornecedor } from '@/schemas/fornecedor';
 import { coresPadaria } from '@/tema';
 import type { Compra } from '@/tipos/compra';
 import type { Fornecedor } from '@/tipos/fornecedor';
@@ -53,7 +53,7 @@ const Compras = () => {
       )
     : compras;
 
-  const manipularAdicionarCompra = (valores: FormularioCompraValores) => {
+  const manipularAdicionarCompra = (valores: CriarCompra) => {
     const novaCompra: Compra = {
       idCompra: obterProximoId(comprasMock, 'idCompra'),
       data: valores.data,
@@ -68,7 +68,7 @@ const Compras = () => {
     setCompras(obterLinhasCompras());
   };
 
-  const manipularAdicionarFornecedor = (valores: FormularioFornecedorValores) => {
+  const manipularAdicionarFornecedor = (valores: CriarFornecedor) => {
     const novoFornecedor: Fornecedor = {
       idFornecedor: obterProximoId(fornecedores, 'idFornecedor'),
       nome: valores.nome,

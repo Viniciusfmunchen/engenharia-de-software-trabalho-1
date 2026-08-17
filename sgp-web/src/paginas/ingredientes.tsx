@@ -6,7 +6,7 @@ import { mensagens } from '@/constantes/mensagens';
 import LayoutPagina from '@/layouts/pagina';
 import { formatarMoeda } from '@/mocks/operacoes-mock';
 import { ingredientesPaes } from '@/mocks/receitas-paes-mock';
-import type { FormularioIngredienteValores } from '@/schemas/ingrediente';
+import type { CriarIngrediente } from '@/schemas/ingrediente';
 import { coresPadaria } from '@/tema';
 import type { Ingrediente } from '@/tipos/ingrediente';
 import { obterProximoId } from '@/utils/identificadores';
@@ -71,7 +71,7 @@ const Ingredientes = () => {
       )
     : ingredientes;
 
-  const manipularAdicionarIngrediente = (valores: FormularioIngredienteValores) => {
+  const manipularAdicionarIngrediente = (valores: CriarIngrediente) => {
     const novoIngrediente: Ingrediente = {
       idIngrediente: obterProximoId(ingredientesPaes, 'idIngrediente'),
       nomeIngrediente: valores.nomeIngrediente,

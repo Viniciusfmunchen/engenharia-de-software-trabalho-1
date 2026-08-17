@@ -1,4 +1,4 @@
-import type { Ingrediente, IngredienteReceita } from "@/tipos/ingrediente";
+import type { Ingrediente } from "@/tipos/ingrediente";
 import type { Receita } from "@/tipos/receita";
 
 export const ingredientesPaes: Ingrediente[] = [

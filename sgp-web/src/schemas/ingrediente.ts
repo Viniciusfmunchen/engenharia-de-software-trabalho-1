@@ -52,5 +52,4 @@ export const formularioIngredienteSchema = z.object({
   ),
 });
 
-export type FormularioIngredienteEntrada = z.input<typeof formularioIngredienteSchema>;
-export type FormularioIngredienteValores = z.output<typeof formularioIngredienteSchema>;
+export type CriarIngrediente = z.infer<typeof formularioIngredienteSchema>;

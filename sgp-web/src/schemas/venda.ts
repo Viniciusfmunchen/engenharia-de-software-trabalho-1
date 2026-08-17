@@ -22,5 +22,4 @@ export const vendaSchema = z.object({
   formaPagamento: z.enum(formasPagamento),
 });
 
-export type FormularioVendaEntrada = z.input<typeof vendaSchema>;
-export type FormularioVendaValores = z.output<typeof vendaSchema>;
+export type CriarVenda = z.infer<typeof vendaSchema>;

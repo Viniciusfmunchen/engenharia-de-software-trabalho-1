@@ -27,5 +27,4 @@ export const compraSchema = z.object({
   status: z.enum(statusCompra),
 });
 
-export type FormularioCompraEntrada = z.input<typeof compraSchema>;
-export type FormularioCompraValores = z.output<typeof compraSchema>;
+export type CriarCompra = z.infer<typeof compraSchema>;

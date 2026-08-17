@@ -9,7 +9,8 @@ import {
   obterResumoVendas,
   vendasMock,
 } from '@/mocks/operacoes-mock';
-import type { FormaPagamento, LinhaPagamento } from '@/tipos/venda';
+import type { FormaPagamento } from '@/tipos/padaria';
+import type { LinhaPagamento } from '@/tipos/venda';
 import { Chip, Stack, Typography } from '@mui/material';
 
 const obterLinhasPagamento = () =>

@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-import { createBrowserRouter, Navigate } from 'react-router';
+import { createBrowserRouter } from 'react-router';
 import Ingredientes from './paginas/ingredientes';
 import LayoutAplicacao from './layouts/aplicacao';
 

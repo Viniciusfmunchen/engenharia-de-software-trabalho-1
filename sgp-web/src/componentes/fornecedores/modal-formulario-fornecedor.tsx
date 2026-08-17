@@ -3,10 +3,9 @@ import ModalFormulario from '@/componentes/formularios/modal-formulario';
 import { mensagens } from '@/constantes/mensagens';
 import {
   fornecedorSchema,
-  type FormularioFornecedorEntrada,
-  type FormularioFornecedorValores,
+  type CriarFornecedor,
 } from '@/schemas/fornecedor';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { resolverZod } from '@/utils/resolver';
 import { Stack } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
@@ -15,11 +14,11 @@ interface PropriedadesModalFormularioFornecedor {
   open?: boolean;
   aoFechar?: () => void;
   onClose?: () => void;
-  aoSubmeter?: (valores: FormularioFornecedorValores) => void;
-  onSubmit?: (valores: FormularioFornecedorValores) => void;
+  aoSubmeter?: (valores: CriarFornecedor) => void;
+  onSubmit?: (valores: CriarFornecedor) => void;
 }
 
-const valoresPadrao: FormularioFornecedorEntrada = {
+const valoresPadrao: CriarFornecedor = {
   nome: '',
   documento: '',
   telefone: '',
@@ -38,8 +37,8 @@ const ModalFormularioFornecedor = ({
   const fechar = aoFechar ?? onClose ?? (() => {});
   const submeter = aoSubmeter ?? onSubmit ?? (() => {});
 
-  const formulario = useForm<FormularioFornecedorEntrada, unknown, FormularioFornecedorValores>({
-    resolver: zodResolver(fornecedorSchema),
+  const formulario = useForm<CriarFornecedor>({
+    resolver: resolverZod(fornecedorSchema),
     defaultValues: valoresPadrao,
   });
 
@@ -48,7 +47,7 @@ const ModalFormularioFornecedor = ({
     fechar();
   };
 
-  const manipularSubmissao = (valores: FormularioFornecedorValores) => {
+  const manipularSubmissao = (valores: CriarFornecedor) => {
     submeter(valores);
     manipularFechamento();
   };
@@ -61,7 +60,7 @@ const ModalFormularioFornecedor = ({
       aoFechar={manipularFechamento}
       aoSubmeter={manipularSubmissao}
     >
-      <CampoTextoFormulario<FormularioFornecedorEntrada>
+      <CampoTextoFormulario<CriarFornecedor>
         name="nome"
         label={mensagens.forms.supplier.name}
         size="small"
@@ -70,13 +69,13 @@ const ModalFormularioFornecedor = ({
       />
 
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 2 }}>
-        <CampoTextoFormulario<FormularioFornecedorEntrada>
+        <CampoTextoFormulario<CriarFornecedor>
           name="documento"
           label={mensagens.forms.supplier.document}
           size="small"
           fullWidth
         />
-        <CampoTextoFormulario<FormularioFornecedorEntrada>
+        <CampoTextoFormulario<CriarFornecedor>
           name="telefone"
           label={mensagens.forms.supplier.phone}
           size="small"
@@ -84,7 +83,7 @@ const ModalFormularioFornecedor = ({
         />
       </Stack>
 
-      <CampoTextoFormulario<FormularioFornecedorEntrada>
+      <CampoTextoFormulario<CriarFornecedor>
         name="nomeContato"
         label={mensagens.forms.supplier.contactName}
         size="small"

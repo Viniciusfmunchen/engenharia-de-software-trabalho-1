@@ -9,5 +9,4 @@ export const clienteSchema = z.object({
   telefone: textoObrigatorio,
 });
 
-export type FormularioClienteEntrada = z.input<typeof clienteSchema>;
-export type FormularioClienteValores = z.output<typeof clienteSchema>;
+export type CriarCliente = z.infer<typeof clienteSchema>;

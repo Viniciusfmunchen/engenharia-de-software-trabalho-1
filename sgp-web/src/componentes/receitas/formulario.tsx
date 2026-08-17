@@ -12,7 +12,7 @@ import {
 import type { Ingrediente } from '@/tipos/ingrediente';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { resolverZod } from '@/utils/resolver';
 import { Button, IconButton, Stack, Typography } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { useFieldArray, useForm } from 'react-hook-form';
@@ -43,8 +43,8 @@ const FormularioReceita = ({
   onSubmit,
 }: PropriedadesFormularioReceita) => {
   const estaAberto = aberto ?? open ?? false;
-  const fechar = aoFechar ?? onClose ?? (() => {});
-  const submeter = aoSubmeter ?? onSubmit ?? (() => {});
+  const fechar = aoFechar ?? onClose ?? (() => { });
+  const submeter = aoSubmeter ?? onSubmit ?? (() => { });
 
   const valoresPadrao = obterValoresPadrao();
   const { data: ingredientes } = useObterPaginado<Ingrediente>({
@@ -64,7 +64,7 @@ const FormularioReceita = ({
   });
 
   const formulario = useForm<CriarReceita>({
-    resolver: zodResolver(criarReceitaSchema),
+    resolver: resolverZod(criarReceitaSchema),
     defaultValues: valoresPadrao,
   });
 
@@ -91,15 +91,15 @@ const FormularioReceita = ({
     });
 
   return (
-    <ModalFormulario
+    <ModalFormulario<CriarReceita>
       aberto={estaAberto}
       titulo={mensagens.forms.recipe.title}
       formulario={formulario}
       aoFechar={manipularFechamento}
-      aoSubmeter={manipularSubmissao}
+      onSubmit={manipularSubmissao}
       larguraMaxima="lg"
     >
-      <CampoTextoFormulario
+      <CampoTextoFormulario<CriarReceita>
         name="nomeReceita"
         label={mensagens.forms.recipe.name}
         size="small"
@@ -108,7 +108,7 @@ const FormularioReceita = ({
       />
 
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 2 }}>
-        <CampoTextoFormulario
+        <CampoTextoFormulario<CriarReceita>
           name="precoVenda"
           label={mensagens.forms.recipe.salePrice}
           type="number"
@@ -116,7 +116,7 @@ const FormularioReceita = ({
           fullWidth
           slotProps={{ htmlInput: { min: 0, step: '0.01' } }}
         />
-        <CampoTextoFormulario
+        <CampoTextoFormulario<CriarReceita>
           name="rendimento"
           label={mensagens.forms.recipe.yieldUnits}
           type="number"
@@ -124,7 +124,7 @@ const FormularioReceita = ({
           fullWidth
           slotProps={{ htmlInput: { min: 1, step: 1 } }}
         />
-        <CampoTextoFormulario
+        <CampoTextoFormulario<CriarReceita>
           name="tempoPreparacao"
           label={mensagens.forms.recipe.preparationTimeMinutes}
           type="number"
@@ -156,7 +156,7 @@ const FormularioReceita = ({
             direction={{ xs: 'column', sm: 'row' }}
             sx={{ alignItems: { sm: 'flex-start' }, gap: 1 }}
           >
-            <CampoSelecaoFormulario
+            <CampoSelecaoFormulario<CriarReceita>
               name={`ingredientes.${indice}.idIngrediente`}
               label={mensagens.forms.recipe.ingredient}
               options={ingredientes.map((ingrediente) => ({
@@ -166,7 +166,7 @@ const FormularioReceita = ({
               size="small"
               fullWidth
             />
-            <CampoTextoFormulario
+            <CampoTextoFormulario<CriarReceita>
               name={`ingredientes.${indice}.quantidade`}
               label={mensagens.common.quantity}
               type="number"

@@ -12,7 +12,6 @@ interface CargaExclusao {
   endpoint: string;
 }
 
-// --- POST ---
 export const useCriar = <TResposta, TCarga>(
   opcoes?: UseMutationOptions<TResposta, Error, CargaMutacao<TCarga>>,
 ) => {

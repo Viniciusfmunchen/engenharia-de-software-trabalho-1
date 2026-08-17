@@ -5,13 +5,12 @@ import { mensagens } from '@/constantes/mensagens';
 import { nomeClienteBalcao } from '@/mocks/entidades-mock';
 import {
   vendaSchema,
-  type FormularioVendaEntrada,
-  type FormularioVendaValores,
+  type CriarVenda,
 } from '@/schemas/venda';
 import type { Cliente } from '@/tipos/cliente';
 import type { Receita } from '@/tipos/receita';
 import { obterDataHojeInput } from '@/utils/data';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { resolverZod } from '@/utils/resolver';
 import { Stack } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
@@ -22,11 +21,11 @@ interface PropriedadesModalFormularioVenda {
   clientes: Cliente[];
   aoFechar?: () => void;
   onClose?: () => void;
-  aoSubmeter?: (valores: FormularioVendaValores) => void;
-  onSubmit?: (valores: FormularioVendaValores) => void;
+  aoSubmeter?: (valores: CriarVenda) => void;
+  onSubmit?: (valores: CriarVenda) => void;
 }
 
-const obterValoresPadrao = (receitas: Receita[]): FormularioVendaEntrada => ({
+const obterValoresPadrao = (receitas: Receita[]): CriarVenda => ({
   data: obterDataHojeInput(),
   nomeComprador: nomeClienteBalcao,
   idReceita: receitas[0]?.idReceita ?? 0,
@@ -58,8 +57,8 @@ const ModalFormularioVenda = ({
     label: cliente.nome,
   }));
 
-  const formulario = useForm<FormularioVendaEntrada, unknown, FormularioVendaValores>({
-    resolver: zodResolver(vendaSchema),
+  const formulario = useForm<CriarVenda>({
+    resolver: resolverZod(vendaSchema),
     defaultValues: valoresPadrao,
   });
 
@@ -68,21 +67,21 @@ const ModalFormularioVenda = ({
     fechar();
   };
 
-  const manipularSubmissao = (valores: FormularioVendaValores) => {
+  const manipularSubmissao = (valores: CriarVenda) => {
     submeter(valores);
     manipularFechamento();
   };
 
   return (
-    <ModalFormulario
+    <ModalFormulario<CriarVenda>
       aberto={estaAberto}
       titulo={mensagens.forms.sale.title}
       formulario={formulario}
       aoFechar={manipularFechamento}
-      aoSubmeter={manipularSubmissao}
+      onSubmit={manipularSubmissao}
     >
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 2 }}>
-        <CampoTextoFormulario<FormularioVendaEntrada>
+        <CampoTextoFormulario<CriarVenda>
           name="data"
           label={mensagens.common.date}
           type="date"
@@ -91,7 +90,7 @@ const ModalFormularioVenda = ({
           autoFocus
           slotProps={{ inputLabel: { shrink: true } }}
         />
-        <CampoSelecaoFormulario<FormularioVendaEntrada>
+        <CampoSelecaoFormulario<CriarVenda>
           name="formaPagamento"
           label={mensagens.forms.sale.paymentMethod}
           options={opcoesFormaPagamento}
@@ -100,7 +99,7 @@ const ModalFormularioVenda = ({
         />
       </Stack>
 
-      <CampoSelecaoFormulario<FormularioVendaEntrada>
+      <CampoSelecaoFormulario<CriarVenda>
         name="nomeComprador"
         label={mensagens.forms.sale.customer}
         options={opcoesClientes}
@@ -108,7 +107,7 @@ const ModalFormularioVenda = ({
         fullWidth
       />
 
-      <CampoSelecaoFormulario<FormularioVendaEntrada>
+      <CampoSelecaoFormulario<CriarVenda>
         name="idReceita"
         label={mensagens.forms.sale.bread}
         options={opcoesReceitas}
@@ -116,7 +115,7 @@ const ModalFormularioVenda = ({
         fullWidth
       />
 
-      <CampoTextoFormulario<FormularioVendaEntrada>
+      <CampoTextoFormulario<CriarVenda>
         name="quantidade"
         label={mensagens.common.quantity}
         type="number"
