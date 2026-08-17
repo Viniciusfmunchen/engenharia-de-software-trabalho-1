@@ -47,10 +47,10 @@ const Compras = () => {
   const buscaNormalizada = busca.trim().toLocaleLowerCase('pt-BR');
   const comprasFiltradas = buscaNormalizada
     ? compras.filter((compra) =>
-        `${compra.nomeFornecedor} ${compra.ingrediente.nomeIngrediente} ${compra.status}`
-          .toLocaleLowerCase('pt-BR')
-          .includes(buscaNormalizada),
-      )
+      `${compra.nomeFornecedor} ${compra.ingrediente.nomeIngrediente} ${compra.status}`
+        .toLocaleLowerCase('pt-BR')
+        .includes(buscaNormalizada),
+    )
     : compras;
 
   const manipularAdicionarCompra = (valores: CriarCompra) => {

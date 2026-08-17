@@ -83,7 +83,6 @@ const Receitas = () => {
       <FormularioReceita
         aberto={formularioAberto}
         aoFechar={() => setFormularioAberto(false)}
-        aoSubmeter={() => { }}
       />
     </LayoutPagina>
   );

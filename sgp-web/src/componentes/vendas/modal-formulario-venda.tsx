@@ -1,5 +1,5 @@
-import { CampoSelecaoFormulario, CampoTextoFormulario } from '@/componentes/formularios/campos';
-import ModalFormulario from '@/componentes/formularios/modal-formulario';
+import { CampoSelecaoFormulario, CampoTextoFormulario } from '@/componentes/ui/formularios/campos';
+import ModalFormulario from '@/componentes/ui/formularios/modal-formulario';
 import { opcoesFormaPagamento, type OpcaoFormulario } from '@/constantes/opcoes-formulario';
 import { mensagens } from '@/constantes/mensagens';
 import { nomeClienteBalcao } from '@/mocks/entidades-mock';
@@ -44,8 +44,8 @@ const ModalFormularioVenda = ({
   onSubmit,
 }: PropriedadesModalFormularioVenda) => {
   const estaAberto = aberto ?? open ?? false;
-  const fechar = aoFechar ?? onClose ?? (() => {});
-  const submeter = aoSubmeter ?? onSubmit ?? (() => {});
+  const fechar = aoFechar ?? onClose ?? (() => { });
+  const submeter = aoSubmeter ?? onSubmit ?? (() => { });
 
   const valoresPadrao = obterValoresPadrao(receitas);
   const opcoesReceitas: OpcaoFormulario<number>[] = receitas.map((receita) => ({

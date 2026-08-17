@@ -31,25 +31,13 @@ export const adicionarIngredienteReceitaSchema = z.object({
 
 export type AdicionarIngredienteReceita = z.infer<typeof adicionarIngredienteReceitaSchema>;
 
-export const formularioIngredienteSchema = z.object({
-  nomeIngrediente: z
-    .string()
-    .trim()
-    .min(1, mensagens.validation.required),
-  categoria: z.enum(categoriasIngrediente),
-  unidade: z.enum(unidadesIngrediente),
-  precoPorUnidade: z.preprocess(
-    (val) => (val === '' ? undefined : Number(val)),
-    z.number({ error: mensagens.validation.positive }).positive(mensagens.validation.positive),
-  ),
-  estoqueAtual: z.preprocess(
-    (val) => (val === '' ? undefined : Number(val)),
-    z.number({ error: mensagens.validation.positive }).nonnegative(mensagens.validation.positive),
-  ),
-  estoqueMinimo: z.preprocess(
-    (val) => (val === '' ? undefined : Number(val)),
-    z.number({ error: mensagens.validation.positive }).nonnegative(mensagens.validation.positive),
-  ),
-});
+export const criarIngredienteSchema = z.object({
+  nomeIngrediente: z.string(),
+  idCategoriaIngrediente: z.coerce.number(),
+  idUnidadeIngrediente: z.coerce.number(),
+  precoPorUnidade: z.coerce.number(),
+  estoqueAtual: z.coerce.number(),
+  estoqueMinimo: z.coerce.number()
+})
 
-export type CriarIngrediente = z.infer<typeof formularioIngredienteSchema>;
+export type CriarIngrediente = z.infer<typeof criarIngredienteSchema>

@@ -1,5 +1,5 @@
-import { CampoTextoFormulario } from '@/componentes/formularios/campos';
-import ModalFormulario from '@/componentes/formularios/modal-formulario';
+import { CampoTextoFormulario } from '@/componentes/ui/formularios/campos';
+import ModalFormulario from '@/componentes/ui/formularios/modal-formulario';
 import { mensagens } from '@/constantes/mensagens';
 import {
   clienteSchema,
@@ -33,8 +33,8 @@ const ModalFormularioCliente = ({
   onSubmit,
 }: PropriedadesModalFormularioCliente) => {
   const estaAberto = aberto ?? open ?? false;
-  const fechar = aoFechar ?? onClose ?? (() => {});
-  const submeter = aoSubmeter ?? onSubmit ?? (() => {});
+  const fechar = aoFechar ?? onClose ?? (() => { });
+  const submeter = aoSubmeter ?? onSubmit ?? (() => { });
 
   const formulario = useForm<CriarCliente>({
     resolver: resolverZod(clienteSchema),

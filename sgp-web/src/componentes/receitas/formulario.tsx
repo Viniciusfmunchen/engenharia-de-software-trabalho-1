@@ -1,9 +1,9 @@
-import { CampoSelecaoFormulario, CampoTextoFormulario } from '@/componentes/formularios/campos';
-import ModalFormulario from '@/componentes/formularios/modal-formulario';
+import { CampoSelecaoFormulario, CampoTextoFormulario } from '@/componentes/ui/formularios/campos';
+import ModalFormulario from '@/componentes/ui/formularios/modal-formulario';
 import { mensagens } from '@/constantes/mensagens';
 import { ENDPOINTS } from '@/constantes/rotas-api';
-import { useCriar } from '@/hooks/mutacao';
-import { useObterPaginado } from '@/hooks/consulta';
+import { useAtualizarParcial, useCriar } from '@/hooks/mutacao';
+import { useObter, useObterPaginado } from '@/hooks/consulta';
 import {
   criarReceitaSchema,
   type CriarReceita,
@@ -18,15 +18,13 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useFieldArray, useForm } from 'react-hook-form';
 
 interface PropriedadesFormularioReceita {
+  idReceita?: string | number;
   aberto?: boolean;
-  open?: boolean;
   aoFechar?: () => void;
-  onClose?: () => void;
   aoSubmeter?: (valores: CriarReceita) => void;
-  onSubmit?: (valores: CriarReceita) => void;
 }
 
-const obterValoresPadrao = (): CriarReceita => ({
+const obterValoresPadrao = (receita?: Receita): CriarReceita => (receita ? { ...receita } : {
   nomeReceita: '',
   rendimento: 1,
   tempoPreparacao: 1,
@@ -36,20 +34,20 @@ const obterValoresPadrao = (): CriarReceita => ({
 
 const FormularioReceita = ({
   aberto,
-  open,
-  aoFechar,
-  onClose,
-  aoSubmeter,
-  onSubmit,
+  aoFechar = () => { },
+  aoSubmeter = () => { },
+  idReceita
 }: PropriedadesFormularioReceita) => {
-  const estaAberto = aberto ?? open ?? false;
-  const fechar = aoFechar ?? onClose ?? (() => { });
-  const submeter = aoSubmeter ?? onSubmit ?? (() => { });
-
-  const valoresPadrao = obterValoresPadrao();
-  const { data: ingredientes } = useObterPaginado<Ingrediente>({
+  const { data: ingredientes } = useObter<Ingrediente[]>({
     endpoint: ENDPOINTS.INGREDIENTE.BASE,
   });
+
+  const { data: receita } = useObter<Receita>({
+    endpoint: ENDPOINTS.RECEITA.POR_ID(idReceita),
+    habilitado: !!idReceita
+  })
+
+  const valoresPadrao = obterValoresPadrao(receita)
 
   const queryClient = useQueryClient();
 
@@ -63,9 +61,22 @@ const FormularioReceita = ({
     },
   });
 
+  const mutacaoEditarReceita = useAtualizarParcial<Receita, CriarReceita>({
+    onSuccess: (dadosAtualizados) => {
+      console.log('Receita editada com sucesso:', dadosAtualizados);
+      queryClient.invalidateQueries({ queryKey: [ENDPOINTS.RECEITA.BASE] });
+      if (idReceita) {
+        queryClient.invalidateQueries({ queryKey: [ENDPOINTS.RECEITA.POR_ID(idReceita)] });
+      }
+    },
+    onError: (erro) => {
+      console.error('Erro ao atualizar receita:', erro);
+    }
+  })
+
   const formulario = useForm<CriarReceita>({
     resolver: resolverZod(criarReceitaSchema),
-    defaultValues: valoresPadrao,
+    defaultValues: valoresPadrao
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -74,13 +85,17 @@ const FormularioReceita = ({
   });
 
   const manipularFechamento = () => {
-    formulario.reset(valoresPadrao);
-    fechar();
+    formulario.reset();
+    aoFechar();
   };
 
   const manipularSubmissao = (valores: CriarReceita) => {
-    mutacaoCriarReceita.mutate({ endpoint: ENDPOINTS.RECEITA.BASE, payload: valores });
-    submeter(valores);
+    if (idReceita) {
+      mutacaoEditarReceita.mutate({ endpoint: ENDPOINTS.RECEITA.POR_ID(idReceita), payload: valores })
+    } else {
+      mutacaoCriarReceita.mutate({ endpoint: ENDPOINTS.RECEITA.BASE, payload: valores });
+    }
+    aoSubmeter(valores);
     manipularFechamento();
   };
 
@@ -92,7 +107,7 @@ const FormularioReceita = ({
 
   return (
     <ModalFormulario<CriarReceita>
-      aberto={estaAberto}
+      aberto={aberto}
       titulo={mensagens.forms.recipe.title}
       formulario={formulario}
       aoFechar={manipularFechamento}
