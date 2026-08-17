@@ -2,12 +2,11 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from 'react-router';
-import { router } from './router';
+import { roteador } from './roteador';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import { theme } from './theme';
-import { SidebarProvider } from './contexts/sidebar';
-
+import { tema } from './tema';
+import { ProvedorBarraLateral } from './contextos/barra-lateral';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -15,14 +14,15 @@ const queryClient = new QueryClient({
     mutations: { retry: 0 },
   },
 });
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <SidebarProvider>
-        <RouterProvider router={router} />
-      </SidebarProvider>
+      <ThemeProvider theme={tema}>
+        <CssBaseline />
+        <ProvedorBarraLateral>
+          <RouterProvider router={roteador} />
+        </ProvedorBarraLateral>
       </ThemeProvider>
     </QueryClientProvider>
   </StrictMode>,
