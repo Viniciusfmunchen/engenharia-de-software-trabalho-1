@@ -32,11 +32,11 @@ export interface ColunaTabela<T> {
 }
 
 interface PropriedadesTabela<T> {
-  columns: ColunaTabela<T>[];
-  rows: T[];
-  getRowId: (linha: T) => string | number;
-  emptyMessage?: string;
-  defaultSort?: EstadoOrdenacao;
+  colunas: ColunaTabela<T>[];
+  linhas: T[];
+  obterIdLinha: (linha: T) => string | number;
+  mensagemVazia?: string;
+  ordenacaoPadrao?: EstadoOrdenacao;
 }
 
 const compararValores = (a: ValorOrdenacao, b: ValorOrdenacao) => {
@@ -56,30 +56,30 @@ const compararValores = (a: ValorOrdenacao, b: ValorOrdenacao) => {
     numeric: true,
     sensitivity: 'base',
   });
-};
+};  
 
 const Tabela = <T,>({
-  columns,
-  rows,
-  getRowId,
-  emptyMessage = mensagens.common.noRecords,
-  defaultSort,
+  colunas,
+  linhas = [],
+  obterIdLinha,
+  mensagemVazia = mensagens.comum.semRegistros,
+  ordenacaoPadrao,
 }: PropriedadesTabela<T>) => {
-  const [ordenacao, setOrdenacao] = useState<EstadoOrdenacao | undefined>(defaultSort);
+  const [ordenacao, setOrdenacao] = useState<EstadoOrdenacao | undefined>(ordenacaoPadrao);
 
   const linhasOrdenadas = useMemo(() => {
-    if (!ordenacao) return rows;
+    if (!ordenacao) return linhas;
 
-    const coluna = columns.find((item) => item.id === ordenacao.columnId);
+    const coluna = colunas.find((item) => item.id === ordenacao.columnId);
 
-    if (!coluna?.sortAccessor) return rows;
+    if (!coluna?.sortAccessor) return linhas;
 
-    return [...rows].sort((a, b) => {
+    return [...linhas].sort((a, b) => {
       const resultado = compararValores(coluna.sortAccessor!(a), coluna.sortAccessor!(b));
 
       return ordenacao.direction === 'asc' ? resultado : -resultado;
     });
-  }, [columns, rows, ordenacao]);
+  }, [colunas, linhas, ordenacao]);
 
   const manipularOrdenacao = (coluna: ColunaTabela<T>) => {
     if (!coluna.sortAccessor) return;
@@ -104,7 +104,7 @@ const Tabela = <T,>({
       <MuiTable size="small">
         <TableHead>
           <TableRow>
-            {columns.map((coluna) => {
+            {colunas.map((coluna) => {
               const estaOrdenada = ordenacao?.columnId === coluna.id;
 
               return (
@@ -133,8 +133,8 @@ const Tabela = <T,>({
 
         <TableBody>
           {linhasOrdenadas.map((linha) => (
-            <TableRow key={getRowId(linha)}>
-              {columns.map((coluna) => (
+            <TableRow key={obterIdLinha(linha)}>
+              {colunas.map((coluna) => (
                 <TableCell key={coluna.id} align={coluna.align}>
                   {coluna.render(linha)}
                 </TableCell>
@@ -144,9 +144,9 @@ const Tabela = <T,>({
 
           {linhasOrdenadas.length === 0 && (
             <TableRow>
-              <TableCell colSpan={columns.length}>
+              <TableCell colSpan={colunas.length}>
                 <Typography variant="body2" color="text.secondary">
-                  {emptyMessage}
+                  {mensagemVazia}
                 </Typography>
               </TableCell>
             </TableRow>

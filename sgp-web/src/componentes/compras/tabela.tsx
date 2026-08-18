@@ -1,39 +1,41 @@
 import { Chip } from '@mui/material';
 import { mensagens } from '@/constantes/mensagens';
-import { formatarData, formatarMoeda, obterLinhasCompras } from '@/mocks/operacoes-mock';
-import type { LinhaCompra } from '@/tipos/compra';
-import Tabela, { type ColunaTabela } from '@/componentes/ui/tabela';
+import { formatarMoeda } from '@/utils/formatar-moeda';
+import type { LinhaCompra } from '@/schemas/compra';
+import Tabela, { type ColunaTabela } from '@/componentes/ui/tabela/index';
+
+// Função utilitária básica para não quebrar a página
+const formatarData = (data: string) => new Date(data).toLocaleDateString('pt-BR');
 
 interface PropriedadesTabelaCompras {
   linhas?: LinhaCompra[];
-  rows?: LinhaCompra[];
 }
 
-const TabelaCompras = ({ linhas, rows }: PropriedadesTabelaCompras) => {
-  const dados = linhas ?? rows ?? obterLinhasCompras();
+const TabelaCompras = ({ linhas = [] }: PropriedadesTabelaCompras) => {
+  const dados = linhas;
 
   const colunas: ColunaTabela<LinhaCompra>[] = [
     {
       id: 'data',
-      label: mensagens.common.date,
+      label: mensagens.comum.data,
       render: (linha) => formatarData(linha.data),
       sortAccessor: (linha) => new Date(linha.data),
     },
     {
       id: 'nomeFornecedor',
-      label: mensagens.common.supplier,
+      label: mensagens.comum.fornecedor,
       render: (linha) => linha.nomeFornecedor,
       sortAccessor: (linha) => linha.nomeFornecedor,
     },
     {
       id: 'ingrediente',
-      label: mensagens.common.ingredients,
+      label: mensagens.comum.ingredientes,
       render: (linha) => linha.ingrediente.nomeIngrediente,
       sortAccessor: (linha) => linha.ingrediente.nomeIngrediente,
     },
     {
       id: 'quantidade',
-      label: mensagens.common.quantity,
+      label: mensagens.comum.quantidade,
       align: 'right',
       render: (linha) =>
         `${linha.quantidade.toLocaleString('pt-BR')} ${linha.ingrediente.unidadeIngrediente.abreviacaoUnidade}`,
@@ -41,19 +43,19 @@ const TabelaCompras = ({ linhas, rows }: PropriedadesTabelaCompras) => {
     },
     {
       id: 'custoTotal',
-      label: mensagens.common.total,
+      label: mensagens.comum.total,
       align: 'right',
       render: (linha) => formatarMoeda(linha.custoTotal),
       sortAccessor: (linha) => linha.custoTotal,
     },
     {
       id: 'status',
-      label: mensagens.common.status,
+      label: mensagens.comum.status,
       render: (linha) => (
         <Chip
           size="small"
           label={linha.status}
-          color={linha.status === 'Recebida' ? 'success' : 'warning'}
+          color={linha.status === 'Concluída' ? 'success' : 'warning'}
           variant="outlined"
         />
       ),
@@ -63,10 +65,10 @@ const TabelaCompras = ({ linhas, rows }: PropriedadesTabelaCompras) => {
 
   return (
     <Tabela
-      columns={colunas}
-      rows={dados}
-      getRowId={(linha) => linha.idCompra}
-      defaultSort={{ columnId: 'data', direction: 'desc' }}
+      colunas={colunas}
+      linhas={dados}
+      obterIdLinha={(linha) => linha.idCompra}
+      ordenacaoPadrao={{ columnId: 'data', direction: 'desc' }}
     />
   );
 };

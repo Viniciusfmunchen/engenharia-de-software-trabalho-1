@@ -14,51 +14,37 @@ interface PropriedadesModalFormulario<
   TValoresCampos extends FieldValues
 > {
   aberto?: boolean;
-  open?: boolean;
   titulo?: string;
-  title?: string;
   formulario?: UseFormReturn<TValoresCampos>;
-  form?: UseFormReturn<TValoresCampos>;
   children: ReactNode;
   aoFechar?: () => void;
-  onClose?: () => void;
   aoSubmeter?: SubmitHandler<TValoresCampos>;
-  onSubmit?: SubmitHandler<TValoresCampos>;
   rotuloSubmissao?: string;
-  submitLabel?: string;
   larguraMaxima?: 'sm' | 'md' | 'lg';
-  maxWidth?: 'sm' | 'md' | 'lg';
 }
 
 const ModalFormulario = <
   TValoresCampos extends FieldValues,
 >({
   aberto,
-  open,
   titulo,
-  title,
   formulario,
-  form,
   children,
   aoFechar,
-  onClose,
   aoSubmeter,
-  onSubmit,
   rotuloSubmissao,
-  submitLabel = mensagens.common.save,
   larguraMaxima,
-  maxWidth = 'md',
 }: PropriedadesModalFormulario<TValoresCampos>) => {
-  const estaAberto = aberto ?? open ?? false;
-  const textoTitulo = titulo ?? title ?? '';
-  const fechar = aoFechar ?? onClose ?? (() => { });
-  const submeter = aoSubmeter ?? onSubmit ?? (() => { });
-  const instanciaFormulario = (formulario ?? form)!;
-  const textoBotao = rotuloSubmissao ?? submitLabel;
-  const tamanho = larguraMaxima ?? maxWidth;
+  const estaAberto = aberto ?? false;
+  const textoTitulo = titulo ?? '';
+  const fechar = aoFechar ?? (() => { });
+  const submeter = aoSubmeter ?? (() => { });
+  const instanciaFormulario = formulario!;
+  const textoBotao = rotuloSubmissao ?? mensagens.comum.salvar;
+  const tamanho = larguraMaxima ?? 'md';
 
   return (
-    <ModalApp open={estaAberto} onClose={fechar} title={textoTitulo} maxWidth={tamanho}>
+    <ModalApp aberto={estaAberto} aoFechar={fechar} titulo={textoTitulo} larguraMaxima={tamanho}>
       <FormProvider {...instanciaFormulario}>
         <Stack
           component="form"
@@ -70,7 +56,7 @@ const ModalFormulario = <
 
           <Stack direction="row" sx={{ justifyContent: 'flex-end', gap: 1, pt: 1 }}>
             <Button type="button" variant="outlined" onClick={fechar}>
-              {mensagens.common.cancel}
+              {mensagens.comum.cancelar}
             </Button>
             <Button
               type="submit"

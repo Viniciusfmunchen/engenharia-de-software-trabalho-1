@@ -1,5 +1,5 @@
 import { mensagens } from '@/constantes/mensagens';
-import { categoriasIngrediente, unidadesIngrediente } from '@/tipos/padaria';
+
 import z from 'zod';
 import { categoriaIngredienteSchema } from './categoria-ingrediente';
 import { unidadeMedidaIngredienteSchema } from './unidade-medida';
@@ -7,7 +7,7 @@ import { unidadeMedidaIngredienteSchema } from './unidade-medida';
 export const ingredienteSchema = z.object({
   idIngrediente: z.number().readonly().describe('Chave primária, apenas para leitura'),
   nomeIngrediente: z
-    .string({ error: mensagens.validation.required })
+    .string({ error: mensagens.validacao.obrigatorio })
     .min(1, 'O nome do ingrediente é obrigatório.'),
   categoriaIngrediente: categoriaIngredienteSchema,
   unidadeIngrediente: unidadeMedidaIngredienteSchema,

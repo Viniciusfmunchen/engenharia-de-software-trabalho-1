@@ -2,10 +2,10 @@ import { Button, Chip, Divider, Stack, Typography } from '@mui/material';
 import { useSearchParams } from 'react-router';
 import Conteiner from '@/componentes/ui/conteiner';
 import { mensagens } from '@/constantes/mensagens';
-import { formatarMoeda } from '@/mocks/operacoes-mock';
+import { formatarMoeda } from '@/utils/formatar-moeda';
 import { Edit } from '@mui/icons-material';
 import { useObter } from '@/hooks/consulta';
-import { ENDPOINTS } from '@/constantes/rotas-api';
+import { ROTAS_API } from '@/constantes/rotas-api';
 import type { Receita } from '@/schemas/receita';
 import { ListaIngredientesReceita } from '../lista-ingredientes';
 import ResumoReceita from '../resumo';
@@ -18,8 +18,8 @@ const VisualizacaoReceita = () => {
   const [formularioAberto, setFormularioAberto] = useState(false);
 
   const idReceitaSelecionada = searchParams.get('idReceita') || searchParams.get('recipeId');
-  const { data: receita, isLoading } = useObter<Receita>({
-    endpoint: ENDPOINTS.RECEITA.POR_ID(idReceitaSelecionada),
+  const { dados: receita, isLoading } = useObter<Receita>({
+    endpoint: ROTAS_API.RECEITA.POR_ID(idReceitaSelecionada),
     habilitado: !!idReceitaSelecionada,
   });
 
@@ -27,7 +27,7 @@ const VisualizacaoReceita = () => {
     return (
       <Conteiner sx={{ width: '100%', height: '100%', minHeight: 240, justifyContent: 'center' }}>
         <Typography variant="body1" color="text.secondary" align="center">
-          {mensagens.pages.recipes.selectForDetails}
+          {mensagens.paginas.receitas.selecioneParaDetalhes}
         </Typography>
       </Conteiner>
     );
@@ -47,7 +47,7 @@ const VisualizacaoReceita = () => {
     return (
       <Conteiner sx={{ width: '100%', height: '100%', minHeight: 240, justifyContent: 'center' }}>
         <Typography variant="body1" color="text.secondary" align="center">
-          {mensagens.pages.recipes.empty}
+          {mensagens.paginas.receitas.vazio}
         </Typography>
       </Conteiner>
     );
@@ -56,14 +56,14 @@ const VisualizacaoReceita = () => {
   return (
     <Conteiner
       titulo={receita.nomeReceita}
-      subtitulo={`${receita.rendimento ?? 0} ${mensagens.pages.recipes.unitsPerRecipeFull}`}
+      subtitulo={`${receita.rendimento ?? 0} ${mensagens.paginas.receitas.unidadesPorReceitaCompleto}`}
       acao={
         <Button size="small" startIcon={<Edit />} onClick={() => setFormularioAberto(true)} >
           Editar
         </Button >
       }
       sx={{ width: '100%', height: '100%' }}
-      contentSx={{ gap: 2 }}
+      sxConteudo={{ gap: 2 }}
     >
       <ResumoReceita receita={receita} />
       <Divider />
@@ -74,11 +74,11 @@ const VisualizacaoReceita = () => {
               direction="row"
               sx={{ justifyContent: 'space-between', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}
             >
-              <Typography variant="h6">{mensagens.common.ingredients}</Typography>
+              <Typography variant="h6">{mensagens.comum.ingredientes}</Typography>
               <Chip
                 color="success"
                 variant="outlined"
-                label={`${mensagens.pages.recipes.estimatedProfitPerUnit} ${formatarMoeda(0)}`}
+                label={`${mensagens.paginas.receitas.lucroEstimadoPorUnidade} ${formatarMoeda(0)}`}
               />
             </Stack>
             <ListaIngredientesReceita ingredientes={receita.ingredientes} />

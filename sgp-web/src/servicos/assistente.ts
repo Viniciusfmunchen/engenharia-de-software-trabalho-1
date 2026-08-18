@@ -1,5 +1,5 @@
 import { apiSgp } from '@/lib/api-sgp';
-import { ENDPOINTS } from '@/constantes/rotas-api';
+import { ROTAS_API } from '@/constantes/rotas-api';
 
 export interface RequisicaoChatAssistente {
   mensagem: string;
@@ -12,7 +12,7 @@ export interface RespostaChatAssistente {
 
 export const servicoAssistente = {
   async enviarMensagem(corpo: RequisicaoChatAssistente): Promise<RespostaChatAssistente> {
-    const { data } = await apiSgp.post<RespostaChatAssistente>(ENDPOINTS.ASSISTENTE.CHAT, corpo);
-    return data;
+    const { data: dados } = await apiSgp.post<RespostaChatAssistente>(ROTAS_API.ASSISTENTE.CHAT, corpo);
+    return dados;
   },
 };

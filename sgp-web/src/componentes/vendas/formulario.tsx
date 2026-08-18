@@ -1,20 +1,19 @@
 import { CampoSelecaoFormulario, CampoTextoFormulario } from '@/componentes/ui/formularios/campos';
-import ModalFormulario from '@/componentes/ui/formularios/modal-formulario';
-import { opcoesFormaPagamento, type OpcaoFormulario } from '@/constantes/opcoes-formulario';
+import ModalFormulario from '@/componentes/ui/formularios/modal';
+import type { OpcaoFormulario } from '@/componentes/ui/formularios/campos';
 import { mensagens } from '@/constantes/mensagens';
-import { nomeClienteBalcao } from '@/mocks/entidades-mock';
 import {
   vendaSchema,
   type CriarVenda,
 } from '@/schemas/venda';
-import type { Cliente } from '@/tipos/cliente';
-import type { Receita } from '@/tipos/receita';
-import { obterDataHojeInput } from '@/utils/data';
+import type { Cliente } from '@/schemas/cliente';
+import type { Receita } from '@/schemas/receita';
+import { formasPagamento } from '@/schemas/venda';
 import { resolverZod } from '@/utils/resolver';
 import { Stack } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
-interface PropriedadesModalFormularioVenda {
+interface PropriedadesFormularioVenda {
   aberto?: boolean;
   open?: boolean;
   receitas: Receita[];
@@ -25,15 +24,17 @@ interface PropriedadesModalFormularioVenda {
   onSubmit?: (valores: CriarVenda) => void;
 }
 
+const obterDataHojeInput = () => new Date().toISOString().split('T')[0];
+
 const obterValoresPadrao = (receitas: Receita[]): CriarVenda => ({
   data: obterDataHojeInput(),
-  nomeComprador: nomeClienteBalcao,
+  nomeComprador: 'Cliente Balcão',
   idReceita: receitas[0]?.idReceita ?? 0,
   quantidade: 1,
   formaPagamento: 'Pix',
 });
 
-const ModalFormularioVenda = ({
+const FormularioVenda = ({
   aberto,
   open,
   receitas,
@@ -42,19 +43,23 @@ const ModalFormularioVenda = ({
   onClose,
   aoSubmeter,
   onSubmit,
-}: PropriedadesModalFormularioVenda) => {
+}: PropriedadesFormularioVenda) => {
   const estaAberto = aberto ?? open ?? false;
   const fechar = aoFechar ?? onClose ?? (() => { });
   const submeter = aoSubmeter ?? onSubmit ?? (() => { });
 
   const valoresPadrao = obterValoresPadrao(receitas);
-  const opcoesReceitas: OpcaoFormulario<number>[] = receitas.map((receita) => ({
+  const opcoesReceitas: OpcaoFormulario[] = receitas.map((receita) => ({
     value: receita.idReceita,
     label: receita.nomeReceita,
   }));
-  const opcoesClientes: OpcaoFormulario<string>[] = clientes.map((cliente) => ({
+  const opcoesClientes: OpcaoFormulario[] = clientes.map((cliente) => ({
     value: cliente.nome,
     label: cliente.nome,
+  }));
+  const opcoesFormaPagamento: OpcaoFormulario[] = formasPagamento.map((forma) => ({
+    value: forma,
+    label: forma,
   }));
 
   const formulario = useForm<CriarVenda>({
@@ -75,15 +80,15 @@ const ModalFormularioVenda = ({
   return (
     <ModalFormulario<CriarVenda>
       aberto={estaAberto}
-      titulo={mensagens.forms.sale.title}
+      titulo={mensagens.formularios.venda.titulo}
       formulario={formulario}
       aoFechar={manipularFechamento}
-      onSubmit={manipularSubmissao}
+      aoSubmeter={manipularSubmissao}
     >
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 2 }}>
         <CampoTextoFormulario<CriarVenda>
           name="data"
-          label={mensagens.common.date}
+          label={mensagens.comum.data}
           type="date"
           size="small"
           fullWidth
@@ -92,7 +97,7 @@ const ModalFormularioVenda = ({
         />
         <CampoSelecaoFormulario<CriarVenda>
           name="formaPagamento"
-          label={mensagens.forms.sale.paymentMethod}
+          label={mensagens.formularios.venda.formaPagamento}
           options={opcoesFormaPagamento}
           size="small"
           fullWidth
@@ -101,7 +106,7 @@ const ModalFormularioVenda = ({
 
       <CampoSelecaoFormulario<CriarVenda>
         name="nomeComprador"
-        label={mensagens.forms.sale.customer}
+        label={mensagens.formularios.venda.cliente}
         options={opcoesClientes}
         size="small"
         fullWidth
@@ -109,7 +114,7 @@ const ModalFormularioVenda = ({
 
       <CampoSelecaoFormulario<CriarVenda>
         name="idReceita"
-        label={mensagens.forms.sale.bread}
+        label={mensagens.formularios.venda.pao}
         options={opcoesReceitas}
         size="small"
         fullWidth
@@ -117,7 +122,7 @@ const ModalFormularioVenda = ({
 
       <CampoTextoFormulario<CriarVenda>
         name="quantidade"
-        label={mensagens.common.quantity}
+        label={mensagens.comum.quantidade}
         type="number"
         size="small"
         fullWidth
@@ -127,4 +132,4 @@ const ModalFormularioVenda = ({
   );
 };
 
-export default ModalFormularioVenda;
+export default FormularioVenda;

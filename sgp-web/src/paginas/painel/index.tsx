@@ -1,68 +1,54 @@
 import Cartao from '@/componentes/ui/cartao';
-import Abas from '@/componentes/ui/abas/abas';
+import Abas from '@/componentes/ui/abas';
 import { mensagens } from '@/constantes/mensagens';
 import LayoutPagina from '@/layouts/pagina';
-import {
-  formatarMoeda,
-  obterResumoCompras,
-  obterResumoEstoque,
-  obterResumoVendas,
-} from '@/mocks/operacoes-mock';
+import { formatarMoeda } from '@/utils/formatar-moeda';
 import { Stack, Typography } from '@mui/material';
 import AbaPaes from './abas/paes';
 import AbaCompras from './abas/compras';
 import AbaVendas from './abas/vendas';
 
 const Painel = () => {
-  const resumoVendas = obterResumoVendas();
-  const resumoCompras = obterResumoCompras();
-  const resumoEstoque = obterResumoEstoque();
+  const resumoVendas = { revenue: 0, profit: 0 };
+  const resumoCompras = { total: 0, pendingCount: 0 };
+  const resumoEstoque = { lowStockCount: 0, criticalStockCount: 0 };
 
   return (
     <LayoutPagina
-      titulo={mensagens.pages.dashboard.title}
-      aside={
+      titulo={mensagens.paginas.painel.titulo}
+      lateral={
         <Typography variant="caption" sx={{ fontWeight: 'bold' }}>
-          {mensagens.pages.dashboard.period}
+          {mensagens.paginas.painel.periodo}
         </Typography>
       }
     >
       <Stack direction={{ xs: 'column', md: 'row' }} sx={{ gap: 1, padding: 2 }}>
         <Cartao
-          titulo={mensagens.pages.dashboard.totalSold}
+          titulo={mensagens.paginas.painel.totalVendido}
           conteudo={formatarMoeda(resumoVendas.revenue)}
-          informacao={mensagens.pages.dashboard.soldSum}
+          informacao={mensagens.paginas.painel.somaVendas}
         />
         <Cartao
-          titulo={mensagens.common.estimatedProfit}
+          titulo={mensagens.comum.lucroEstimado}
           conteudo={formatarMoeda(resumoVendas.profit)}
-          informacao={mensagens.pages.dashboard.profitInfo}
+          informacao={mensagens.paginas.painel.infoLucro}
         />
         <Cartao
-          titulo={mensagens.pages.dashboard.purchases}
+          titulo={mensagens.paginas.painel.compras}
           conteudo={formatarMoeda(resumoCompras.total)}
-          informacao={`${resumoCompras.pendingCount} ${mensagens.pages.dashboard.pendingPurchases}`}
+          informacao={`${resumoCompras.pendingCount} ${mensagens.paginas.painel.comprasPendentes}`}
         />
         <Cartao
-          titulo={mensagens.pages.dashboard.lowStock}
+          titulo={mensagens.paginas.painel.estoqueBaixo}
           conteudo={resumoEstoque.lowStockCount.toLocaleString('pt-BR')}
-          informacao={`${resumoEstoque.criticalStockCount} ${mensagens.pages.dashboard.criticalIngredients}`}
+          informacao={`${resumoEstoque.criticalStockCount} ${mensagens.paginas.painel.ingredientesCriticos}`}
         />
       </Stack>
       <Abas
-        tabs={[
-          {
-            label: mensagens.tabs.sales,
-            content: <AbaVendas />,
-          },
-          {
-            label: mensagens.tabs.purchases,
-            content: <AbaCompras />,
-          },
-          {
-            label: mensagens.tabs.breads,
-            content: <AbaPaes />,
-          },
+        abas={[
+          { rotulo: mensagens.abas.vendas, conteudo: <AbaVendas /> },
+          { rotulo: mensagens.abas.compras, conteudo: <AbaCompras /> },
+          { rotulo: mensagens.abas.paes, conteudo: <AbaPaes /> },
         ]}
       />
     </LayoutPagina>

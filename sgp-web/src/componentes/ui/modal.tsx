@@ -18,35 +18,25 @@ const larguraModal = {
 
 interface PropriedadesModalApp {
   aberto?: boolean;
-  open?: boolean;
-  titulo?: string;
-  title?: string;
-  children: ReactNode;
   aoFechar?: () => void;
-  onClose?: () => void;
+  titulo?: string;
+  children: ReactNode;
   larguraMaxima?: keyof typeof larguraModal;
-  maxWidth?: keyof typeof larguraModal;
   sx?: SxProps<Theme>;
 }
 
 const ModalApp = ({
-  aberto,
-  open,
-  titulo,
-  title,
-  children,
+  aberto = false,
   aoFechar,
-  onClose,
-  larguraMaxima,
-  maxWidth = 'md',
+  titulo,
+  children,
+  larguraMaxima = 'md',
   sx,
 }: PropriedadesModalApp) => {
   const idTitulo = useId();
-  const estaAberto = aberto ?? open ?? false;
-  const fechar = aoFechar ?? onClose ?? (() => {});
-  const textoTitulo = titulo ?? title ?? '';
-  const tamanho = larguraMaxima ?? maxWidth;
-
+  const estaAberto = aberto;
+  const fechar = aoFechar;
+  const textoTitulo = titulo;
   return (
     <MuiModal open={estaAberto} onClose={fechar} aria-labelledby={idTitulo}>
       <Box
@@ -54,7 +44,7 @@ const ModalApp = ({
           position: 'absolute',
           top: '50%',
           left: '50%',
-          width: `min(calc(100vw - 32px), ${larguraModal[tamanho]}px)`,
+          width: `min(calc(100vw - 32px), ${larguraModal[larguraMaxima]}px)`,
           maxHeight: 'calc(100vh - 32px)',
           transform: 'translate(-50%, -50%)',
           bgcolor: 'background.paper',

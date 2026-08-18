@@ -12,11 +12,13 @@ interface ParametrosObterPor {
 export const useObter = <T>({ endpoint, habilitado = true }: ParametrosObterPor) => {
   const servico = useMemo(() => new Servico<T>(apiSgp), []);
 
-  return useQuery({
+  const { data, ...resto } = useQuery({
     queryKey: [endpoint],
     queryFn: async () => await servico.obterPor(endpoint),
     enabled: habilitado,
   });
+
+  return { dados: data as T | undefined, ...resto };
 };
 
 interface ParametrosObterPaginado {
@@ -61,8 +63,8 @@ export const useObterPaginado = <T>({
   });
 
   return {
-    data: resposta?.dados ?? [],
-    totalElements: resposta?.totalElementos ?? 0,
+    dados: resposta?.dados ?? [],
+    totalElementos: resposta?.totalElementos ?? 0,
     ...retornoConsulta,
   };
 };

@@ -1,31 +1,30 @@
 import { mensagens } from '@/constantes/mensagens';
-import type { Cliente } from '@/tipos/cliente';
+import type { Cliente } from '@/schemas/cliente';
 import Tabela, { type ColunaTabela } from '@/componentes/ui/tabela';
 
 interface PropriedadesTabelaClientes {
   linhas?: Cliente[];
-  rows?: Cliente[];
 }
 
-const TabelaClientes = ({ linhas, rows }: PropriedadesTabelaClientes) => {
-  const dados = linhas ?? rows ?? [];
+const TabelaClientes = ({ linhas = [] }: PropriedadesTabelaClientes) => {
+  const dados = linhas;
 
   const colunas: ColunaTabela<Cliente>[] = [
     {
       id: 'nome',
-      label: mensagens.common.customers,
+      label: mensagens.comum.clientes,
       render: (linha) => linha.nome,
       sortAccessor: (linha) => linha.nome,
     },
     {
       id: 'documento',
-      label: mensagens.common.document,
+      label: mensagens.comum.documento,
       render: (linha) => linha.documento,
       sortAccessor: (linha) => linha.documento,
     },
     {
       id: 'telefone',
-      label: mensagens.common.phone,
+      label: mensagens.comum.telefone,
       render: (linha) => linha.telefone,
       sortAccessor: (linha) => linha.telefone,
     },
@@ -33,10 +32,10 @@ const TabelaClientes = ({ linhas, rows }: PropriedadesTabelaClientes) => {
 
   return (
     <Tabela
-      columns={colunas}
-      rows={dados}
-      getRowId={(linha) => linha.idCliente}
-      defaultSort={{ columnId: 'nome', direction: 'asc' }}
+      colunas={colunas}
+      linhas={dados}
+      obterIdLinha={(linha) => linha.idCliente}
+      ordenacaoPadrao={{ columnId: 'nome', direction: 'asc' }}
     />
   );
 };

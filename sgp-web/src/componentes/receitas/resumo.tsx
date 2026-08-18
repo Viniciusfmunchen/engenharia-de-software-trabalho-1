@@ -1,12 +1,12 @@
 import { Stack } from '@mui/material';
 import Resumo from '@/componentes/ui/resumo';
-import { formatarMoedaDeCentavos } from '@/mocks/receitas-paes-mock';
-import { formatarMoeda, formatarTempo } from './lista';
 import { mensagens } from '@/constantes/mensagens';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import type { Receita } from '@/tipos/receita';
+import type { Receita } from '@/schemas/receita';
+import { formatarMoeda } from '@/utils/formatar-moeda';
+import { formatarTempo } from '@/utils/formatar-tempo';
 
 interface PropriedadesResumoReceita {
   receita: Receita;
@@ -17,22 +17,22 @@ const ResumoReceita = ({ receita }: PropriedadesResumoReceita) => {
     <Stack direction="row" sx={{ gap: 2, flexWrap: 'wrap' }}>
       <Resumo
         icon={<AttachMoneyIcon fontSize="small" />}
-        label={mensagens.pages.recipes.salePrice}
-        value={formatarMoedaDeCentavos(receita.precoVenda)}
+        label={mensagens.paginas.receitas.precoVenda}
+        value={formatarMoeda(receita.precoVenda)}
       />
       <Resumo
         icon={<Inventory2Icon fontSize="small" />}
-        label={mensagens.pages.recipes.recipeCost}
+        label={mensagens.paginas.receitas.custoReceita}
         value={formatarMoeda(receita.precoPorReceita ?? 0)}
       />
       <Resumo
         icon={<AttachMoneyIcon fontSize="small" />}
-        label={mensagens.pages.recipes.costPerUnit}
+        label={mensagens.paginas.receitas.custoPorUnidade}
         value={formatarMoeda(receita.precoPorUnidade ?? 0)}
       />
       <Resumo
         icon={<AccessTimeIcon fontSize="small" />}
-        label={mensagens.pages.recipes.preparation}
+        label={mensagens.paginas.receitas.preparo}
         value={formatarTempo(receita.tempoPreparacao)}
       />
     </Stack>

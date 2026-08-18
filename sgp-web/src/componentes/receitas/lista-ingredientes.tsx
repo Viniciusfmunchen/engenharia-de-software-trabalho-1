@@ -1,4 +1,4 @@
-import type { IngredienteReceita } from '@/tipos/ingrediente';
+import type { IngredienteReceita } from '@/schemas/ingrediente';
 import { Stack, Typography } from '@mui/material';
 
 export const ListaIngredientesReceita = ({

@@ -5,10 +5,10 @@ import { Typography } from '@mui/material';
 
 const Relatorios = () => {
   return (
-    <LayoutPagina titulo={mensagens.pages.reports.title}>
+    <LayoutPagina titulo={mensagens.paginas.relatorios.titulo}>
       <Conteiner>
         <Typography variant="body2" color="text.secondary">
-          {mensagens.pages.reports.placeholder}
+          {mensagens.paginas.relatorios.placeholder}
         </Typography>
       </Conteiner>
     </LayoutPagina>

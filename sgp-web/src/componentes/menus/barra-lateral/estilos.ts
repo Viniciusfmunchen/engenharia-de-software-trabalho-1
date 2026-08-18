@@ -84,6 +84,13 @@ export const BotaoItemBarraLateral = styled(ToggleButton)({
   },
 });
 
+export const BotaoSubitemBarraLateral = styled(BotaoItemBarraLateral)({
+  paddingLeft: 48,
+  paddingTop: 8,
+  paddingBottom: 8,
+  fontSize: '0.85rem',
+});
+
 // Aliases para compatibilidade
 export const SidebarContainer = ConteinerBarraLateral;
 export const SidebarHeader = CabecalhoBarraLateral;
@@ -91,3 +98,4 @@ export const SidebarIconSlot = EspacoIconeBarraLateral;
 export const SidebarText = TextoBarraLateral;
 export const SidebarMenu = MenuBarraLateral;
 export const SidebarToggleButton = BotaoItemBarraLateral;
+export const SidebarSubToggleButton = BotaoSubitemBarraLateral;

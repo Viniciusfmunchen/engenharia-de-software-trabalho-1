@@ -1,4 +1,4 @@
-export const ENDPOINTS = {
+export const ROTAS_API = {
   RECEITA: {
     BASE: '/receita',
     POR_ID: (id: string | number | null | undefined) => `/receita/${id}`,
@@ -12,5 +12,17 @@ export const ENDPOINTS = {
   },
   ASSISTENTE: {
     CHAT: '/assistant/chat',
+  },
+  COMPRA: {
+    BASE: '/compra',
+  },
+  FORNECEDOR: {
+    BASE: '/fornecedor',
+  },
+  VENDA: {
+    BASE: '/venda',
+  },
+  CLIENTE: {
+    BASE: '/cliente',
   },
 } as const;

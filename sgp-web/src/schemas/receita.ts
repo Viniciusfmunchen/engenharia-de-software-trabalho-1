@@ -4,16 +4,16 @@ import { adicionarIngredienteReceitaSchema, ingredienteReceitaSchema } from './i
 
 export const receitaSchema = z.object({
   idReceita: z.coerce.number().readonly().describe('Chave primária, apenas para leitura'),
-  nomeReceita: z.string({ error: mensagens.validation.required }).min(1, 'O nome da receita é obrigatório.'),
+  nomeReceita: z.string({ error: mensagens.validacao.obrigatorio }).min(1, 'O nome da receita é obrigatório.'),
   precoVenda: z.coerce
-    .number({ error: mensagens.validation.required })
+    .number({ error: mensagens.validacao.obrigatorio })
     .positive('O preço de venda deve ser um número positivo.'),
   rendimento: z.coerce
-    .number({ error: mensagens.validation.required })
+    .number({ error: mensagens.validacao.obrigatorio })
     .positive('O rendimento deve ser um número positivo.')
     .int('O rendimento deve ser um número inteiro.'),
   tempoPreparacao: z.coerce
-    .number({ error: mensagens.validation.required })
+    .number({ error: mensagens.validacao.obrigatorio })
     .positive('O tempo de preparo deve ser um número positivo.')
     .int('O tempo de preparo deve ser um número inteiro.'),
   ingredientes: z.array(ingredienteReceitaSchema),
@@ -31,7 +31,7 @@ export const criarReceitaSchema = receitaSchema
     ingredientes: true,
   })
   .extend({
-    ingredientes: z.array(adicionarIngredienteReceitaSchema).min(1, mensagens.validation.minOneIngredient),
+    ingredientes: z.array(adicionarIngredienteReceitaSchema).min(1, mensagens.validacao.minimoUmIngrediente),
   });
 
 export type CriarReceita = z.infer<typeof criarReceitaSchema>;

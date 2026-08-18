@@ -1,6 +1,9 @@
 import { FormControlLabel, Switch, TextField, type TextFieldProps } from '@mui/material';
 import { Controller, useFormContext, type FieldPath, type FieldValues } from 'react-hook-form';
-import type { OpcaoFormulario } from '@/constantes/opcoes-formulario';
+export interface OpcaoFormulario {
+  label: string;
+  value: string | number;
+}
 
 type PropriedadesCampoTexto<T extends FieldValues> = Omit<TextFieldProps, 'name'> & {
   name: FieldPath<T>;

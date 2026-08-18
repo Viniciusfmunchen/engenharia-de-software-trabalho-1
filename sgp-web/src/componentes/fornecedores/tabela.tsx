@@ -1,37 +1,36 @@
 import { mensagens } from '@/constantes/mensagens';
-import type { Fornecedor } from '@/tipos/fornecedor';
+import type { Fornecedor } from '@/schemas/fornecedor';
 import Tabela, { type ColunaTabela } from '@/componentes/ui/tabela';
 
 interface PropriedadesTabelaFornecedores {
   linhas?: Fornecedor[];
-  rows?: Fornecedor[];
 }
 
-const TabelaFornecedores = ({ linhas, rows }: PropriedadesTabelaFornecedores) => {
-  const dados = linhas ?? rows ?? [];
+const TabelaFornecedores = ({ linhas = [] }: PropriedadesTabelaFornecedores) => {
+  const dados = linhas;
 
   const colunas: ColunaTabela<Fornecedor>[] = [
     {
       id: 'nome',
-      label: mensagens.common.supplier,
+      label: mensagens.comum.fornecedor,
       render: (linha) => linha.nome,
       sortAccessor: (linha) => linha.nome,
     },
     {
       id: 'documento',
-      label: mensagens.common.document,
+      label: mensagens.comum.documento,
       render: (linha) => linha.documento,
       sortAccessor: (linha) => linha.documento,
     },
     {
       id: 'telefone',
-      label: mensagens.common.phone,
+      label: mensagens.comum.telefone,
       render: (linha) => linha.telefone,
       sortAccessor: (linha) => linha.telefone,
     },
     {
       id: 'nomeContato',
-      label: mensagens.common.contactName,
+      label: mensagens.comum.nomeContato,
       render: (linha) => linha.nomeContato,
       sortAccessor: (linha) => linha.nomeContato,
     },
@@ -39,10 +38,10 @@ const TabelaFornecedores = ({ linhas, rows }: PropriedadesTabelaFornecedores) =>
 
   return (
     <Tabela
-      columns={colunas}
-      rows={dados}
-      getRowId={(linha) => linha.idFornecedor}
-      defaultSort={{ columnId: 'nome', direction: 'asc' }}
+      colunas={colunas}
+      linhas={dados}
+      obterIdLinha={(linha) => linha.idFornecedor}
+      ordenacaoPadrao={{ columnId: 'nome', direction: 'asc' }}
     />
   );
 };

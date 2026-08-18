@@ -1,7 +1,7 @@
 import { mensagens } from '@/constantes/mensagens';
 import z from 'zod';
 
-const textoObrigatorio = z.string().trim().min(1, mensagens.validation.required);
+const textoObrigatorio = z.string().trim().min(1, mensagens.validacao.obrigatorio);
 
 export const fornecedorSchema = z.object({
   nome: textoObrigatorio,
@@ -11,3 +11,7 @@ export const fornecedorSchema = z.object({
 });
 
 export type CriarFornecedor = z.infer<typeof fornecedorSchema>;
+
+export interface Fornecedor extends CriarFornecedor {
+  idFornecedor: number;
+}

@@ -1,40 +1,39 @@
 import { mensagens } from '@/constantes/mensagens';
-import { formatarMoeda, obterLinhasVendasClientes } from '@/mocks/operacoes-mock';
-import type { LinhaVendasCliente } from '@/tipos/venda';
-import Tabela, { type ColunaTabela } from '@/componentes/ui/tabela';
+import { formatarMoeda } from '@/utils/formatar-moeda';
+import type { LinhaVendasCliente } from '@/schemas/venda';
+import Tabela, { type ColunaTabela } from '@/componentes/ui/tabela/index';
 
 interface PropriedadesTabelaVendas {
   linhas?: LinhaVendasCliente[];
-  rows?: LinhaVendasCliente[];
 }
 
-const TabelaVendas = ({ linhas, rows }: PropriedadesTabelaVendas) => {
-  const dados = linhas ?? rows ?? obterLinhasVendasClientes();
+const TabelaVendas = ({ linhas = [] }: PropriedadesTabelaVendas) => {
+  const dados = linhas;
 
   const colunas: ColunaTabela<LinhaVendasCliente>[] = [
     {
       id: 'nomeComprador',
-      label: mensagens.common.buyer,
+      label: mensagens.comum.comprador,
       render: (linha) => linha.nomeComprador,
       sortAccessor: (linha) => linha.nomeComprador,
     },
     {
       id: 'pedidos',
-      label: mensagens.common.orders,
+      label: mensagens.comum.pedidos,
       align: 'right',
       render: (linha) => linha.pedidos.toLocaleString('pt-BR'),
       sortAccessor: (linha) => linha.pedidos,
     },
     {
       id: 'quantidade',
-      label: mensagens.common.units,
+      label: mensagens.comum.unidades,
       align: 'right',
       render: (linha) => linha.quantidade.toLocaleString('pt-BR'),
       sortAccessor: (linha) => linha.quantidade,
     },
     {
       id: 'faturamento',
-      label: mensagens.common.revenue,
+      label: mensagens.comum.faturamento,
       align: 'right',
       render: (linha) => formatarMoeda(linha.faturamento),
       sortAccessor: (linha) => linha.faturamento,
@@ -43,10 +42,10 @@ const TabelaVendas = ({ linhas, rows }: PropriedadesTabelaVendas) => {
 
   return (
     <Tabela
-      columns={colunas}
-      rows={dados}
-      getRowId={(linha) => linha.idComprador}
-      defaultSort={{ columnId: 'faturamento', direction: 'desc' }}
+      colunas={colunas}
+      linhas={dados}
+      obterIdLinha={(linha) => linha.idComprador}
+      ordenacaoPadrao={{ columnId: 'faturamento', direction: 'desc' }}
     />
   );
 };

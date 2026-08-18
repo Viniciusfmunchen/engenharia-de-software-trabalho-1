@@ -1,29 +1,13 @@
 import Conteiner from '@/componentes/ui/conteiner';
 import { mensagens } from '@/constantes/mensagens';
-import { formatarMoedaDeCentavos } from '@/mocks/receitas-paes-mock';
-import type { Receita } from '@/tipos/receita';
+import { formatarMoeda } from '@/utils/formatar-moeda';
+import type { Receita } from '@/schemas/receita';
 import { coresPadaria } from '@/tema';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 import { Chip, Stack, Typography } from '@mui/material';
 import { useSearchParams } from 'react-router';
-
-export const formatarMoeda = (valor: number) =>
-  valor.toLocaleString('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  });
-
-export const formatarTempo = (minutos: number) => {
-  const horas = Math.floor(minutos / 60);
-  const minutosRestantes = minutos % 60;
-
-  if (!horas) return `${minutosRestantes} min`;
-  if (!minutosRestantes) return `${horas} h`;
-
-  return `${horas} h ${minutosRestantes} min`;
-};
-
+import { formatarTempo } from '@/utils/formatar-tempo';
 interface PropriedadesListaReceitas {
   receitas: Receita[];
 }
@@ -67,11 +51,11 @@ const ListaReceitas = ({ receitas }: PropriedadesListaReceitas) => {
         }}
       >
         <Typography variant="caption" color="text.secondary">
-          {receitas.length} {mensagens.pages.recipes.foundSuffix}
+          {receitas.length} {mensagens.paginas.receitas.sufixoEncontradas}
         </Typography>
 
         <Typography variant="caption" color="text.secondary">
-          {mensagens.pages.recipes.selectForDetails}
+          {mensagens.paginas.receitas.selecioneParaDetalhes}
         </Typography>
       </Stack>
 
@@ -111,10 +95,10 @@ const ListaReceitas = ({ receitas }: PropriedadesListaReceitas) => {
                 <Stack sx={{ gap: 0.5 }}>
                   <Typography variant="h6">{receita.nomeReceita}</Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {receita.rendimento ?? 0} {mensagens.pages.recipes.unitsPerRecipe}
+                    {receita.rendimento ?? 0} {mensagens.paginas.receitas.unidadesPorReceita}
                   </Typography>
                 </Stack>
-                <Chip size="small" label={formatarMoedaDeCentavos(receita.precoVenda)} />
+                <Chip size="small" label={formatarMoeda(receita.precoVenda)} />
               </Stack>
 
               <Stack direction="row" sx={{ gap: 1, flexWrap: 'wrap' }}>
@@ -126,7 +110,7 @@ const ListaReceitas = ({ receitas }: PropriedadesListaReceitas) => {
                 <Chip
                   size="small"
                   icon={<Inventory2Icon />}
-                  label={`${receita.ingredientes.length} ${mensagens.common.ingredients.toLocaleLowerCase('pt-BR')}`}
+                  label={`${receita.ingredientes.length} ${mensagens.comum.ingredientes.toLocaleLowerCase('pt-BR')}`}
                 />
               </Stack>
             </Stack>

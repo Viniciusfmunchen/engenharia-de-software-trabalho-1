@@ -1,23 +1,22 @@
 import { CampoSelecaoFormulario, CampoTextoFormulario } from '@/componentes/ui/formularios/campos';
-import ModalFormulario from '@/componentes/ui/formularios/modal-formulario';
+import ModalFormulario from '@/componentes/ui/formularios/modal';
 import { mensagens } from '@/constantes/mensagens';
 import {
-  formularioIngredienteSchema,
+  criarIngredienteSchema,
   type Ingrediente,
   type CriarIngrediente,
-  criarIngredienteSchema,
 } from '@/schemas/ingrediente';
 import { resolverZod } from '@/utils/resolver';
 import { Stack } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAtualizarParcial, useCriar } from '@/hooks/mutacao';
-import { ENDPOINTS } from '@/constantes/rotas-api';
+import { ROTAS_API } from '@/constantes/rotas-api';
 import { useObterPaginado } from '@/hooks/consulta';
 import type { UnidadeMedida } from '@/schemas/unidade-medida';
 import type { CategoriaIngrediente } from '@/schemas/categoria-ingrediente';
 
-interface PropriedadesModalFormularioIngrediente {
+interface PropriedadesFormularioIngrediente {
   aberto?: boolean;
   aoFechar?: () => void;
   aoSubmeter?: (valores: CriarIngrediente) => void;
@@ -26,28 +25,28 @@ interface PropriedadesModalFormularioIngrediente {
 
 const valoresPadrao: CriarIngrediente = {
   nomeIngrediente: '',
-  categoria: 'farinha',
-  unidade: 'g',
+  idCategoriaIngrediente: 0,
+  idUnidadeIngrediente: 0,
   precoPorUnidade: 0,
   estoqueAtual: 0,
   estoqueMinimo: 0,
 };
 
-const ModalFormularioIngrediente = ({
+const FormularioIngrediente = ({
   aberto,
   aoFechar = () => { },
   aoSubmeter = () => { },
   idIngrediente
-}: PropriedadesModalFormularioIngrediente) => {
+}: PropriedadesFormularioIngrediente) => {
   const queryClient = useQueryClient()
 
-  const { data: categorias } = useObterPaginado<CategoriaIngrediente>({ endpoint: ENDPOINTS.INGREDIENTE.CATEGORIA })
-  const { data: unidadesMedida } = useObterPaginado<UnidadeMedida>({ endpoint: ENDPOINTS.INGREDIENTE.UM })
+  const { dados: categorias } = useObterPaginado<CategoriaIngrediente>({ endpoint: ROTAS_API.INGREDIENTE.CATEGORIA })
+  const { dados: unidadesMedida } = useObterPaginado<UnidadeMedida>({ endpoint: ROTAS_API.INGREDIENTE.UM })
 
   const criarIngredienteMutacao = useCriar<Ingrediente, CriarIngrediente>({
     onSuccess: (dadosCriados) => {
       console.log("Ingrediente criado com sucesso:", dadosCriados)
-      queryClient.invalidateQueries({ queryKey: [ENDPOINTS.INGREDIENTE.BASE] })
+      queryClient.invalidateQueries({ queryKey: [ROTAS_API.INGREDIENTE.BASE] })
     },
     onError: (erro) => {
       console.log("Erro ao criar ingrediente: ", erro)
@@ -58,7 +57,7 @@ const ModalFormularioIngrediente = ({
   const atualizarIngredienteMutacao = useAtualizarParcial<Ingrediente, CriarIngrediente>({
     onSuccess: (dadosAtualizados) => {
       console.log("Ingrediente atualizado com sucesso:", dadosAtualizados)
-      queryClient.invalidateQueries({ queryKey: [ENDPOINTS.INGREDIENTE.BASE] })
+      queryClient.invalidateQueries({ queryKey: [ROTAS_API.INGREDIENTE.BASE] })
     },
     onError: (erro) => {
       console.log("Erro ao atualizar ingrediente: ", erro)
@@ -77,9 +76,9 @@ const ModalFormularioIngrediente = ({
 
   const manipularSubmissao = (valores: CriarIngrediente) => {
     if (idIngrediente) {
-      atualizarIngredienteMutacao.mutate({ endpoint: ENDPOINTS.INGREDIENTE.POR_ID(idIngrediente), payload: valores })
+      atualizarIngredienteMutacao.mutate({ endpoint: ROTAS_API.INGREDIENTE.POR_ID(idIngrediente), payload: valores })
     } else {
-      criarIngredienteMutacao.mutate({ endpoint: ENDPOINTS.INGREDIENTE.BASE, payload: valores })
+      criarIngredienteMutacao.mutate({ endpoint: ROTAS_API.INGREDIENTE.BASE, payload: valores })
     }
     aoSubmeter(valores);
     manipularFechamento();
@@ -88,14 +87,14 @@ const ModalFormularioIngrediente = ({
   return (
     <ModalFormulario<CriarIngrediente>
       aberto={aberto}
-      titulo={mensagens.forms.ingredient.title}
+      titulo={mensagens.formularios.ingrediente.titulo}
       formulario={formulario}
       aoFechar={manipularFechamento}
       aoSubmeter={manipularSubmissao}
     >
       <CampoTextoFormulario<CriarIngrediente>
         name="nomeIngrediente"
-        label={mensagens.forms.ingredient.name}
+        label={mensagens.formularios.ingrediente.nome}
         size="small"
         autoFocus
         fullWidth
@@ -103,15 +102,15 @@ const ModalFormularioIngrediente = ({
 
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 2 }}>
         <CampoSelecaoFormulario<CriarIngrediente>
-          name="categoria"
-          label={mensagens.forms.ingredient.category}
+          name="idCategoriaIngrediente"
+          label={mensagens.formularios.ingrediente.categoria}
           options={categorias?.map((categoria) => ({ label: categoria.nomeCategoria, value: categoria.idCategoriaIngrediente })) ?? []}
           size="small"
           fullWidth
         />
         <CampoSelecaoFormulario<CriarIngrediente>
-          name="unidade"
-          label={mensagens.forms.ingredient.unit}
+          name="idUnidadeIngrediente"
+          label={mensagens.formularios.ingrediente.unidade}
           options={unidadesMedida?.map((um) => ({ label: um.nomeUnidade, value: um.idUnidadeIngrediente })) ?? []}
           size="small"
           fullWidth
@@ -121,7 +120,7 @@ const ModalFormularioIngrediente = ({
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 2 }}>
         <CampoTextoFormulario<CriarIngrediente>
           name="precoPorUnidade"
-          label={mensagens.forms.ingredient.costPerUnit}
+          label={mensagens.formularios.ingrediente.custoPorUnidade}
           type="number"
           size="small"
           fullWidth
@@ -129,7 +128,7 @@ const ModalFormularioIngrediente = ({
         />
         <CampoTextoFormulario<CriarIngrediente>
           name="estoqueAtual"
-          label={mensagens.forms.ingredient.stockQuantity}
+          label={mensagens.formularios.ingrediente.estoqueAtual}
           type="number"
           size="small"
           fullWidth
@@ -137,7 +136,7 @@ const ModalFormularioIngrediente = ({
         />
         <CampoTextoFormulario<CriarIngrediente>
           name="estoqueMinimo"
-          label={mensagens.forms.ingredient.minStockQuantity}
+          label={mensagens.formularios.ingrediente.estoqueMinimo}
           type="number"
           size="small"
           fullWidth
@@ -148,4 +147,4 @@ const ModalFormularioIngrediente = ({
   );
 };
 
-export default ModalFormularioIngrediente;
+export default FormularioIngrediente;

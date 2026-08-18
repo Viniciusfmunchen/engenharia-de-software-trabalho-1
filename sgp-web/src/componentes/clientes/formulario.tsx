@@ -1,44 +1,43 @@
 import { CampoTextoFormulario } from '@/componentes/ui/formularios/campos';
-import ModalFormulario from '@/componentes/ui/formularios/modal-formulario';
+import ModalFormulario from '@/componentes/ui/formularios/modal';
 import { mensagens } from '@/constantes/mensagens';
 import {
-  fornecedorSchema,
-  type CriarFornecedor,
-} from '@/schemas/fornecedor';
+  clienteSchema,
+  type CriarCliente,
+} from '@/schemas/cliente';
 import { resolverZod } from '@/utils/resolver';
 import { Stack } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
-interface PropriedadesModalFormularioFornecedor {
+interface PropriedadesFormularioCliente {
   aberto?: boolean;
   open?: boolean;
   aoFechar?: () => void;
   onClose?: () => void;
-  aoSubmeter?: (valores: CriarFornecedor) => void;
-  onSubmit?: (valores: CriarFornecedor) => void;
+  aoSubmeter?: (valores: CriarCliente) => void;
+  onSubmit?: (valores: CriarCliente) => void;
 }
 
-const valoresPadrao: CriarFornecedor = {
+const valoresPadrao: CriarCliente = {
   nome: '',
   documento: '',
   telefone: '',
-  nomeContato: '',
 };
 
-const ModalFormularioFornecedor = ({
+const FormularioCliente = ({
   aberto,
   open,
   aoFechar,
   onClose,
   aoSubmeter,
   onSubmit,
-}: PropriedadesModalFormularioFornecedor) => {
+}: PropriedadesFormularioCliente) => {
   const estaAberto = aberto ?? open ?? false;
   const fechar = aoFechar ?? onClose ?? (() => { });
   const submeter = aoSubmeter ?? onSubmit ?? (() => { });
 
-  const formulario = useForm<CriarFornecedor>({
-    resolver: resolverZod(fornecedorSchema),
+  const formulario = useForm<CriarCliente>({
+    resolver: resolverZod(clienteSchema),
     defaultValues: valoresPadrao,
   });
 
@@ -47,7 +46,7 @@ const ModalFormularioFornecedor = ({
     fechar();
   };
 
-  const manipularSubmissao = (valores: CriarFornecedor) => {
+  const manipularSubmissao = (valores: CriarCliente) => {
     submeter(valores);
     manipularFechamento();
   };
@@ -55,42 +54,35 @@ const ModalFormularioFornecedor = ({
   return (
     <ModalFormulario
       aberto={estaAberto}
-      titulo={mensagens.forms.supplier.title}
+      titulo={mensagens.formularios.cliente.titulo}
       formulario={formulario}
       aoFechar={manipularFechamento}
       aoSubmeter={manipularSubmissao}
     >
-      <CampoTextoFormulario<CriarFornecedor>
+      <CampoTextoFormulario<CriarCliente>
         name="nome"
-        label={mensagens.forms.supplier.name}
+        label={mensagens.formularios.cliente.nome}
         size="small"
         fullWidth
         autoFocus
       />
 
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 2 }}>
-        <CampoTextoFormulario<CriarFornecedor>
+        <CampoTextoFormulario<CriarCliente>
           name="documento"
-          label={mensagens.forms.supplier.document}
+          label={mensagens.formularios.cliente.documento}
           size="small"
           fullWidth
         />
-        <CampoTextoFormulario<CriarFornecedor>
+        <CampoTextoFormulario<CriarCliente>
           name="telefone"
-          label={mensagens.forms.supplier.phone}
+          label={mensagens.formularios.cliente.telefone}
           size="small"
           fullWidth
         />
       </Stack>
-
-      <CampoTextoFormulario<CriarFornecedor>
-        name="nomeContato"
-        label={mensagens.forms.supplier.contactName}
-        size="small"
-        fullWidth
-      />
     </ModalFormulario>
   );
 };
 
-export default ModalFormularioFornecedor;
+export default FormularioCliente;

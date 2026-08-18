@@ -8,22 +8,22 @@ import Conteiner from '@/componentes/ui/conteiner';
 import SearchIcon from '@mui/icons-material/Search';
 import { useState } from 'react';
 import { useObterPaginado } from '@/hooks/consulta';
-import { ENDPOINTS } from '@/constantes/rotas-api';
-import type { Receita } from '@/tipos/receita';
+import { ROTAS_API } from '@/constantes/rotas-api';
+import type { Receita } from '@/schemas/receita';
 import VisualizacaoReceita from '@/componentes/receitas/visualizacao';
 import FormularioReceita from '@/componentes/receitas/formulario';
 
 const Receitas = () => {
   const [formularioAberto, setFormularioAberto] = useState(false);
   const [busca, setBusca] = useState(''); // filtros
-  const { data: receitas } = useObterPaginado<Receita>({
-    endpoint: ENDPOINTS.RECEITA.BASE,
+  const { dados: receitas } = useObterPaginado<Receita>({
+    endpoint: ROTAS_API.RECEITA.BASE,
   });
 
   return (
     <LayoutPagina
-      titulo={mensagens.pages.recipes.title}
-      aside={
+      titulo={mensagens.paginas.receitas.titulo}
+      lateral={
         <Button
           variant="contained"
           startIcon={<RestaurantMenuIcon />}
@@ -36,7 +36,7 @@ const Receitas = () => {
           }}
           onClick={() => setFormularioAberto(true)}
         >
-          {mensagens.actions.addRecipe}
+          {mensagens.acoes.adicionarReceita}
         </Button>
       }
     >
@@ -45,8 +45,8 @@ const Receitas = () => {
           <TextField
             fullWidth
             size="small"
-            label={mensagens.pages.recipes.searchLabel}
-            placeholder={mensagens.pages.recipes.searchPlaceholder}
+            label={mensagens.paginas.receitas.pesquisar}
+            placeholder={mensagens.paginas.receitas.placeholderPesquisa}
             value={busca}
             onChange={(evento) => setBusca(evento.target.value)}
             slotProps={{
@@ -73,7 +73,7 @@ const Receitas = () => {
           <Conteiner>
             <Stack spacing={2}>
               <Stack sx={{ alignItems: 'center', justifyContent: 'center', height: 200 }}>
-                <Typography>{mensagens.pages.recipes.empty}</Typography>
+                <Typography>{mensagens.paginas.receitas.vazio}</Typography>
               </Stack>
             </Stack>
           </Conteiner>

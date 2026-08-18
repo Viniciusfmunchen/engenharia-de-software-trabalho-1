@@ -12,48 +12,48 @@ import {
 } from './estilos';
 
 export interface ItemAba {
-  label: string;
-  content: ReactNode;
-  disabled?: boolean;
+  rotulo: string;
+  conteudo: ReactNode;
+  desativado?: boolean;
 }
 
 interface PropriedadesAbas {
-  tabs: ItemAba[];
-  defaultValue?: number;
-  value?: number;
-  onChange?: (valor: number) => void;
-  ariaLabel?: string;
-  panelSx?: SxProps<Theme>;
+  abas: ItemAba[];
+  valorPadrao?: number;
+  valor?: number;
+  aoMudar?: (valor: number) => void;
+  rotuloAria?: string;
+  sxPainel?: SxProps<Theme>;
 }
 
 const Abas = ({
-  tabs,
-  defaultValue = 0,
-  value,
-  onChange,
-  ariaLabel = mensagens.tabs.navigation,
-  panelSx,
+  abas,
+  valorPadrao = 0,
+  valor,
+  aoMudar,
+  rotuloAria = mensagens.abas.navegacao,
+  sxPainel,
 }: PropriedadesAbas) => {
   const id = useId();
-  const [valorInterno, setValorInterno] = useState(defaultValue);
+  const [valorInterno, setValorInterno] = useState(valorPadrao);
 
-  const valorAtual = value ?? valorInterno;
+  const valorAtual = valor ?? valorInterno;
 
   const manipularMudanca = (_: SyntheticEvent, novoValor: number) => {
     setValorInterno(novoValor);
-    onChange?.(novoValor);
+    aoMudar?.(novoValor);
   };
 
   return (
     <RaizAbas>
       <CabecalhoAbas>
-        <AbasEstilizadas value={valorAtual} onChange={manipularMudanca} aria-label={ariaLabel}>
-          {tabs.map((aba, indice) => (
+        <AbasEstilizadas value={valorAtual} onChange={manipularMudanca} aria-label={rotuloAria}>
+          {abas.map((aba, indice) => (
             <AbaEstilizada
-              key={aba.label}
-              label={aba.label}
+              key={aba.rotulo}
+              label={aba.rotulo}
               iconPosition="start"
-              disabled={aba.disabled}
+              disabled={aba.desativado}
               id={`${id}-tab-${indice}`}
               aria-controls={`${id}-tabpanel-${indice}`}
             />
@@ -61,16 +61,16 @@ const Abas = ({
         </AbasEstilizadas>
       </CabecalhoAbas>
 
-      {tabs.map((aba, indice) => (
+      {abas.map((aba, indice) => (
         <PainelAbaEstilizado
-          key={aba.label}
+          key={aba.rotulo}
           role="tabpanel"
           hidden={valorAtual !== indice}
           id={`${id}-tabpanel-${indice}`}
           aria-labelledby={`${id}-tab-${indice}`}
-          sx={panelSx}
+          sx={sxPainel}
         >
-          {valorAtual === indice && aba.content}
+          {valorAtual === indice && aba.conteudo}
         </PainelAbaEstilizado>
       ))}
     </RaizAbas>

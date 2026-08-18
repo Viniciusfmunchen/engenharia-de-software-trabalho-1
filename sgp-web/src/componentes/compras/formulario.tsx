@@ -1,19 +1,18 @@
 import { CampoSelecaoFormulario, CampoTextoFormulario } from '@/componentes/ui/formularios/campos';
-import ModalFormulario from '@/componentes/ui/formularios/modal-formulario';
+import ModalFormulario from '@/componentes/ui/formularios/modal';
 import { opcoesStatusCompra, type OpcaoFormulario } from '@/constantes/opcoes-formulario';
 import { mensagens } from '@/constantes/mensagens';
 import {
   compraSchema,
   type CriarCompra,
 } from '@/schemas/compra';
-import type { Fornecedor } from '@/tipos/fornecedor';
-import type { Ingrediente } from '@/tipos/ingrediente';
-import { obterDataHojeInput } from '@/utils/data';
+import type { Fornecedor } from '@/schemas/fornecedor';
+import type { Ingrediente } from '@/schemas/ingrediente';
 import { resolverZod } from '@/utils/resolver';
 import { Stack } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
-interface PropriedadesModalFormularioCompra {
+interface PropriedadesFormularioCompra {
   aberto?: boolean;
   open?: boolean;
   ingredientes: Ingrediente[];
@@ -28,15 +27,15 @@ const obterValoresPadrao = (
   ingredientes: Ingrediente[],
   fornecedores: Fornecedor[],
 ): CriarCompra => ({
-  data: obterDataHojeInput(),
+  data: new Date().toISOString().split('T')[0],
   nomeFornecedor: fornecedores[0]?.nome ?? '',
   idIngrediente: ingredientes[0]?.idIngrediente ?? 0,
   quantidade: 0,
   custoUnitario: ingredientes[0]?.precoPorUnidade ?? 0,
-  status: 'Recebida',
+  status: 'Concluída',
 });
 
-const ModalFormularioCompra = ({
+const FormularioCompra = ({
   aberto,
   open,
   ingredientes,
@@ -45,7 +44,7 @@ const ModalFormularioCompra = ({
   onClose,
   aoSubmeter,
   onSubmit,
-}: PropriedadesModalFormularioCompra) => {
+}: PropriedadesFormularioCompra) => {
   const estaAberto = aberto ?? open ?? false;
   const fechar = aoFechar ?? onClose ?? (() => { });
   const submeter = aoSubmeter ?? onSubmit ?? (() => { });
@@ -78,7 +77,7 @@ const ModalFormularioCompra = ({
   return (
     <ModalFormulario
       aberto={estaAberto}
-      titulo={mensagens.forms.purchase.title}
+      titulo={mensagens.formularios.compra.titulo}
       formulario={formulario}
       aoFechar={manipularFechamento}
       aoSubmeter={manipularSubmissao}
@@ -86,7 +85,7 @@ const ModalFormularioCompra = ({
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 2 }}>
         <CampoTextoFormulario<CriarCompra>
           name="data"
-          label={mensagens.common.date}
+          label={mensagens.comum.data}
           type="date"
           size="small"
           fullWidth
@@ -95,7 +94,7 @@ const ModalFormularioCompra = ({
         />
         <CampoSelecaoFormulario<CriarCompra>
           name="status"
-          label={mensagens.common.status}
+          label={mensagens.comum.status}
           options={opcoesStatusCompra}
           size="small"
           fullWidth
@@ -104,7 +103,7 @@ const ModalFormularioCompra = ({
 
       <CampoSelecaoFormulario<CriarCompra>
         name="nomeFornecedor"
-        label={mensagens.forms.purchase.supplierName}
+        label={mensagens.formularios.compra.fornecedor}
         options={opcoesFornecedores}
         size="small"
         fullWidth
@@ -112,7 +111,7 @@ const ModalFormularioCompra = ({
 
       <CampoSelecaoFormulario<CriarCompra>
         name="idIngrediente"
-        label={mensagens.forms.purchase.ingredient}
+        label={mensagens.formularios.compra.ingrediente}
         options={opcoesIngredientes}
         size="small"
         fullWidth
@@ -121,7 +120,7 @@ const ModalFormularioCompra = ({
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 2 }}>
         <CampoTextoFormulario<CriarCompra>
           name="quantidade"
-          label={mensagens.common.quantity}
+          label={mensagens.comum.quantidade}
           type="number"
           size="small"
           fullWidth
@@ -129,7 +128,7 @@ const ModalFormularioCompra = ({
         />
         <CampoTextoFormulario<CriarCompra>
           name="custoUnitario"
-          label={mensagens.forms.purchase.unitCost}
+          label={mensagens.formularios.compra.custoUnitario}
           type="number"
           size="small"
           fullWidth
@@ -140,4 +139,4 @@ const ModalFormularioCompra = ({
   );
 };
 
-export default ModalFormularioCompra;
+export default FormularioCompra;

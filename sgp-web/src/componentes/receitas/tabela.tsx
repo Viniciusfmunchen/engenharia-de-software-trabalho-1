@@ -1,40 +1,39 @@
 import { mensagens } from '@/constantes/mensagens';
-import { formatarMoeda, obterLinhasVendasPaes } from '@/mocks/operacoes-mock';
-import type { LinhaVendasPao } from '@/tipos/venda';
-import Tabela, { type ColunaTabela } from '@/componentes/ui/tabela';
+import { formatarMoeda } from '@/utils/formatar-moeda';
+import type { LinhaVendasPao } from '@/schemas/venda';
+import Tabela, { type ColunaTabela } from '@/componentes/ui/tabela/index';
 
 interface PropriedadesTabelaReceitas {
   linhas?: LinhaVendasPao[];
-  rows?: LinhaVendasPao[];
 }
 
-const TabelaReceitas = ({ linhas, rows }: PropriedadesTabelaReceitas) => {
-  const dados = linhas ?? rows ?? obterLinhasVendasPaes();
+const TabelaReceitas = ({ linhas = [] }: PropriedadesTabelaReceitas) => {
+  const dados = linhas;
 
   const colunas: ColunaTabela<LinhaVendasPao>[] = [
     {
       id: 'nomePao',
-      label: mensagens.table.breadType,
+      label: mensagens.tabela.tipoPao,
       render: (linha) => linha.nomePao,
       sortAccessor: (linha) => linha.nomePao,
     },
     {
       id: 'quantidade',
-      label: mensagens.table.sold,
+      label: mensagens.tabela.vendidos,
       align: 'right',
       render: (linha) => linha.quantidade.toLocaleString('pt-BR'),
       sortAccessor: (linha) => linha.quantidade,
     },
     {
       id: 'faturamento',
-      label: mensagens.common.revenue,
+      label: mensagens.comum.faturamento,
       align: 'right',
       render: (linha) => formatarMoeda(linha.faturamento),
       sortAccessor: (linha) => linha.faturamento,
     },
     {
       id: 'lucroEstimado',
-      label: mensagens.common.estimatedProfit,
+      label: mensagens.comum.lucroEstimado,
       align: 'right',
       render: (linha) => formatarMoeda(linha.lucroEstimado),
       sortAccessor: (linha) => linha.lucroEstimado,
@@ -43,10 +42,10 @@ const TabelaReceitas = ({ linhas, rows }: PropriedadesTabelaReceitas) => {
 
   return (
     <Tabela
-      columns={colunas}
-      rows={dados}
-      getRowId={(linha) => linha.idReceita}
-      defaultSort={{ columnId: 'quantidade', direction: 'desc' }}
+      colunas={colunas}
+      linhas={dados}
+      obterIdLinha={(linha) => linha.idReceita}
+      ordenacaoPadrao={{ columnId: 'quantidade', direction: 'desc' }}
     />
   );
 };

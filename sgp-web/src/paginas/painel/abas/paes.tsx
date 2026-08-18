@@ -1,38 +1,44 @@
 import TabelaReceitas from '@/componentes/receitas/tabela';
 import Cartao from '@/componentes/ui/cartao';
 import { mensagens } from '@/constantes/mensagens';
-import { formatarMoeda, obterResumoVendas } from '@/mocks/operacoes-mock';
+import { formatarMoeda } from '@/utils/formatar-moeda';
 import { Stack } from '@mui/material';
 
 const AbaPaes = () => {
-  const resumo = obterResumoVendas();
+  const resumo = {
+    quantity: 0,
+    profit: 0,
+    bestBread: null as any,
+    lowestBread: null as any,
+    mostProfitableBread: null as any,
+  };
 
   return (
     <Stack spacing={2}>
       <Stack direction="row" sx={{ gap: 2, flexWrap: 'wrap' }}>
         <Stack sx={{ gap: 1, flex: 1, minWidth: 240 }}>
           <Cartao
-            titulo={mensagens.pages.dashboard.totalSold}
+            titulo={mensagens.paginas.painel.totalVendido}
             conteudo={resumo.quantity.toLocaleString('pt-BR')}
-            informacao={mensagens.dashboardTabs.breads.unitsSold}
+            informacao={mensagens.abasPainel.paes.unidadesVendidas}
           />
           <Cartao
-            titulo={mensagens.common.estimatedProfit}
+            titulo={mensagens.comum.lucroEstimado}
             conteudo={formatarMoeda(resumo.profit)}
-            informacao={mensagens.dashboardTabs.breads.profitPeriod}
+            informacao={mensagens.abasPainel.paes.lucroPeriodo}
           />
           <Cartao
-            titulo={mensagens.dashboardTabs.breads.bestBread}
+            titulo={mensagens.abasPainel.paes.melhorPao}
             conteudo={resumo.bestBread?.breadName ?? '-'}
-            informacao={`${resumo.bestBread?.quantity.toLocaleString('pt-BR') ?? 0} ${mensagens.dashboardTabs.breads.units}`}
+            informacao={`${resumo.bestBread?.quantity.toLocaleString('pt-BR') ?? 0} ${mensagens.abasPainel.paes.unidades}`}
           />
           <Cartao
-            titulo={mensagens.dashboardTabs.breads.lowestBread}
+            titulo={mensagens.abasPainel.paes.piorPao}
             conteudo={resumo.lowestBread?.breadName ?? '-'}
-            informacao={`${resumo.lowestBread?.quantity.toLocaleString('pt-BR') ?? 0} ${mensagens.dashboardTabs.breads.units}`}
+            informacao={`${resumo.lowestBread?.quantity.toLocaleString('pt-BR') ?? 0} ${mensagens.abasPainel.paes.unidades}`}
           />
           <Cartao
-            titulo={mensagens.dashboardTabs.breads.mostProfitableBread}
+            titulo={mensagens.abasPainel.paes.paoMaisLucrativo}
             conteudo={resumo.mostProfitableBread?.breadName ?? '-'}
             informacao={formatarMoeda(resumo.mostProfitableBread?.estimatedProfit ?? 0)}
           />

@@ -1,34 +1,31 @@
-import ModalFormularioIngrediente from '@/componentes/ingredientes/modal-formulario-ingrediente';
+import ModalFormularioIngrediente from '@/componentes/ingredientes/formulario';
 import TabelaIngredientes from '@/componentes/ingredientes/tabela';
 import Cartao from '@/componentes/ui/cartao';
 import Conteiner from '@/componentes/ui/conteiner';
 import { mensagens } from '@/constantes/mensagens';
-import { ENDPOINTS } from '@/constantes/rotas-api';
+import { ROTAS_API } from '@/constantes/rotas-api';
 import { useObterPaginado } from '@/hooks/consulta';
 import LayoutPagina from '@/layouts/pagina';
-import { formatarMoeda } from '@/mocks/operacoes-mock';
-import { ingredientesPaes } from '@/mocks/receitas-paes-mock';
-import type { CriarIngrediente, Ingrediente } from '@/schemas/ingrediente';
+import type { Ingrediente } from '@/schemas/ingrediente';
 import { coresPadaria } from '@/tema';
 
-import { obterProximoId } from '@/utils/identificadores';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
-import { Button, InputAdornment, Stack, TextField, Typography } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { Button, InputAdornment, Stack, TextField } from '@mui/material';
+import { useState } from 'react';
 
 const Ingredientes = () => {
   const [busca, setBusca] = useState('');
   const [formularioAberto, setFormularioAberto] = useState(false);
 
-  const { data: ingredientes, totalElements } = useObterPaginado<Ingrediente>({
-    endpoint: ENDPOINTS.INGREDIENTE.BASE
+  const { dados: ingredientes, totalElementos } = useObterPaginado<Ingrediente>({
+    endpoint: ROTAS_API.INGREDIENTE.BASE
   })
 
   return (
     <LayoutPagina
-      titulo={mensagens.pages.ingredients.title}
-      aside={
+      titulo={mensagens.paginas.ingredientes.titulo}
+      lateral={
         <Button
           variant="contained"
           startIcon={<AddIcon />}
@@ -39,38 +36,38 @@ const Ingredientes = () => {
           }}
           onClick={() => setFormularioAberto(true)}
         >
-          {mensagens.actions.addIngredient}
+          {mensagens.acoes.adicionarIngrediente}
         </Button>
       }
     >
       <Stack spacing={2}>
         <Stack direction={{ xs: 'column', md: 'row' }} sx={{ gap: 1 }}>
           <Cartao
-            titulo={mensagens.pages.ingredients.registered}
-            conteudo={totalElements.toLocaleString('pt-BR')}
-            informacao={mensagens.pages.ingredients.availableItems}
+            titulo={mensagens.paginas.ingredientes.cadastrados}
+            conteudo={totalElementos.toLocaleString('pt-BR')}
+            informacao={mensagens.paginas.ingredientes.itensDisponiveis}
           />
           {/* <Cartao
-            titulo={mensagens.pages.ingredients.lowStock}
+            titulo={mensagens.paginas.ingredientes.estoqueBaixo}
             conteudo={resumo.quantidadeEstoqueBaixo.toLocaleString('pt-BR')}
-            informacao={`${resumo.quantidadeEstoqueCritico} ${mensagens.pages.ingredients.criticalLevel}`}
+            informacao={`${resumo.quantidadeEstoqueCritico} ${mensagens.paginas.ingredientes.nivelCritico}`}
           />
           <Cartao
-            titulo={mensagens.pages.ingredients.stockValue}
+            titulo={mensagens.paginas.ingredientes.valorEstoque}
             conteudo={formatarMoeda(resumo.valorEstoque)}
-            informacao={mensagens.pages.ingredients.stockValueInfo}
+            informacao={mensagens.paginas.ingredientes.infoValorEstoque}
           /> */}
         </Stack>
 
         {/*  {ingredientesEstoqueBaixo.length > 0 && (
           <Conteiner
-            titulo={mensagens.pages.ingredients.stockAttention}
+            titulo={mensagens.paginas.ingredientes.atencaoEstoque}
             subtitulo={ingredientesEstoqueBaixo
               .map((ingrediente) => ingrediente.nomeIngrediente)
               .join(', ')}
           >
             <Typography variant="body2" color="text.secondary">
-              {mensagens.pages.ingredients.stockAttentionInfo}
+              {mensagens.paginas.ingredientes.infoAtencaoEstoque}
             </Typography>
           </Conteiner>
         )} */}
@@ -79,8 +76,8 @@ const Ingredientes = () => {
           <TextField
             fullWidth
             size="small"
-            label={mensagens.pages.ingredients.searchLabel}
-            placeholder={mensagens.pages.ingredients.searchPlaceholder}
+            label={mensagens.paginas.ingredientes.pesquisar}
+            placeholder={mensagens.paginas.ingredientes.placeholderPesquisa}
             value={busca}
             onChange={(evento) => setBusca(evento.target.value)}
             slotProps={{
@@ -95,13 +92,13 @@ const Ingredientes = () => {
           />
         </Conteiner>
 
-        <TabelaIngredientes linhas={ingredientes} />
+        <TabelaIngredientes ingredientes={ingredientes} />
       </Stack>
 
       <ModalFormularioIngrediente
         aberto={formularioAberto}
         aoFechar={() => setFormularioAberto(false)}
-      /* aoSubmeter={manipularAdicionarIngrediente} */
+        aoSubmeter={(valores) => console.log(valores)}
       />
     </LayoutPagina>
   );

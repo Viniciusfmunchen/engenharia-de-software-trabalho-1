@@ -5,7 +5,7 @@ interface PropriedadesConteiner extends PropsWithChildren {
   titulo?: string;
   subtitulo?: string;
   acao?: ReactNode;
-  contentSx?: SxProps<Theme>;
+  sxConteudo?: SxProps<Theme>;
   semEspacamento?: boolean;
   sx?: StackProps['sx'];
 }
@@ -15,7 +15,7 @@ const Conteiner = ({
   subtitulo,
   acao,
   children,
-  contentSx,
+  sxConteudo,
   semEspacamento = false,
   sx,
 }: PropriedadesConteiner) => {
@@ -66,7 +66,7 @@ const Conteiner = ({
         sx={{
           p: semEspacamento ? 0 : 2,
           pt: temCabecalho && !semEspacamento ? 1 : semEspacamento ? 0 : 2,
-          ...contentSx,
+          ...sxConteudo,
         }}
       >
         {children}

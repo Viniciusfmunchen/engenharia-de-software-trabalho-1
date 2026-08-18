@@ -42,7 +42,7 @@ const LayoutAplicacao = () => {
             paddingBottom: 1,
           }}
         >
-          {mensagens.app.eyebrow}
+          {mensagens.aplicativo.slogan}
         </Typography>
         <Outlet />
       </Stack>
