@@ -8,7 +8,6 @@ interface ParametrosObterPor {
   habilitado?: boolean;
 }
 
-// GET Simples (Para um ID específico ou retorno de objeto único)
 export const useObter = <T>({ endpoint, habilitado = true }: ParametrosObterPor) => {
   const servico = useMemo(() => new Servico<T>(apiSgp), []);
 
@@ -21,18 +20,22 @@ export const useObter = <T>({ endpoint, habilitado = true }: ParametrosObterPor)
   return { dados: data as T | undefined, ...resto };
 };
 
-interface ParametrosObterPaginado {
+interface ParametrosObterTodos {
   endpoint: string;
   parametrosRequisicao?: Record<string, unknown>;
   habilitado?: boolean;
-  habilitarOrdenacao?: boolean;
 }
 
-// GET Paginado (Integrado com Spring Boot e Tabela)
+interface ParametrosObterPaginado extends ParametrosObterTodos {
+  habilitarOrdenacao?: boolean;
+  paginado?: boolean
+}
+
 export const useObterPaginado = <T>({
   endpoint,
   parametrosRequisicao,
   habilitado = true,
+  paginado = true,
 }: ParametrosObterPaginado) => {
   const servico = useMemo(() => new Servico<T>(apiSgp), []);
 
@@ -45,7 +48,7 @@ export const useObterPaginado = <T>({
     queryKey,
     queryFn: async () => {
       const params = {
-        unpaged: false,
+        unpaged: !paginado,
         ...parametrosRequisicao,
       };
 

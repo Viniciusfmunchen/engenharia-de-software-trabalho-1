@@ -3,7 +3,7 @@ import ModalFormulario from '@/componentes/ui/formularios/modal';
 import { mensagens } from '@/constantes/mensagens';
 import { ROTAS_API } from '@/constantes/rotas-api';
 import { useAtualizarParcial, useCriar } from '@/hooks/mutacao';
-import { useObter } from '@/hooks/consulta';
+import { useObter, useObterPaginado } from '@/hooks/consulta';
 import {
   criarReceitaSchema,
   type CriarReceita,
@@ -23,12 +23,13 @@ interface PropriedadesFormularioReceita {
   aoSubmeter?: (valores: CriarReceita) => void;
 }
 
-const obterValoresPadrao = (receita?: Receita): CriarReceita => (receita ? { ...receita } : {
+const obterValoresPadrao = (receita?: Receita): CriarReceita => (receita ? { ...receita, idUnidadeMedida: receita.unidadeMedida.idUnidadeMedida } : {
   nomeReceita: '',
-  rendimento: 1,
-  tempoPreparacao: 1,
-  precoVenda: 0,
+  rendimento: 0,
+  tempoPreparo: 0,
   ingredientes: [],
+  idUnidadeMedida: 0,
+  validade: 0
 });
 
 const FormularioReceita = ({
@@ -37,8 +38,9 @@ const FormularioReceita = ({
   aoSubmeter = () => { },
   idReceita
 }: PropriedadesFormularioReceita) => {
-  const { dados: ingredientes } = useObter<Ingrediente[]>({
+  const { dados: ingredientes } = useObterPaginado<Ingrediente>({
     endpoint: ROTAS_API.INGREDIENTE.BASE,
+    paginado: false
   });
 
   const { dados: receita } = useObter<Receita>({
@@ -73,20 +75,36 @@ const FormularioReceita = ({
     }
   })
 
+  const mutacaoEditarIngredientesReceita = useAtualizarParcial<Receita, CriarReceita>({
+    onSuccess: (dadosAtualizados) => {
+      console.log('Ingredientes da receita editada com sucesso:', dadosAtualizados);
+      queryClient.invalidateQueries({ queryKey: [ROTAS_API.RECEITA.BASE] });
+      if (idReceita) {
+        queryClient.invalidateQueries({ queryKey: [ROTAS_API.RECEITA.POR_ID(idReceita)] });
+      }
+    },
+    onError: (erro) => {
+      console.error('Erro ao atualizar ingredientes da receita:', erro);
+    }
+  })
+
   const formulario = useForm<CriarReceita>({
     resolver: resolverZod(criarReceitaSchema),
-    defaultValues: valoresPadrao
+    values: valoresPadrao
   });
 
-
   const manipularFechamento = () => {
-    formulario.reset();
+    formulario.reset(receita);
     aoFechar();
   };
 
   const manipularSubmissao = (valores: CriarReceita) => {
     if (idReceita) {
+      console.log(valores)
       mutacaoEditarReceita.mutate({ endpoint: ROTAS_API.RECEITA.POR_ID(idReceita), payload: valores })
+      valores.ingredientes.map((ingrediente) => {
+
+      })
     } else {
       mutacaoCriarReceita.mutate({ endpoint: ROTAS_API.RECEITA.BASE, payload: valores });
     }

@@ -3,6 +3,7 @@ import {
   LARGURA_BARRA_LATERAL_RECOLHIDA,
 } from '@/constantes/interface';
 import { coresPadaria } from '@/tema';
+import { ThemeContext } from '@emotion/react';
 import { Box, Stack, ToggleButton, Typography, styled } from '@mui/material';
 
 export const ConteinerBarraLateral = styled(Box, {
@@ -43,8 +44,8 @@ export const EspacoIconeBarraLateral = styled(Box)({
 
 export const TextoBarraLateral = styled(Typography, {
   shouldForwardProp: (prop) => prop !== 'recolhida' && prop !== 'collapsed',
-})<{ recolhida?: boolean; collapsed?: boolean }>(({ recolhida, collapsed }) => {
-  const estaRecolhida = recolhida ?? collapsed;
+})<{ recolhida?: boolean }>(({ recolhida }) => {
+  const estaRecolhida = recolhida;
   return {
     whiteSpace: 'nowrap',
     opacity: estaRecolhida ? 0 : 1,
@@ -86,16 +87,6 @@ export const BotaoItemBarraLateral = styled(ToggleButton)({
 
 export const BotaoSubitemBarraLateral = styled(BotaoItemBarraLateral)({
   paddingLeft: 48,
-  paddingTop: 8,
-  paddingBottom: 8,
   fontSize: '0.85rem',
+  background: coresPadaria.barraLateralHover
 });
-
-// Aliases para compatibilidade
-export const SidebarContainer = ConteinerBarraLateral;
-export const SidebarHeader = CabecalhoBarraLateral;
-export const SidebarIconSlot = EspacoIconeBarraLateral;
-export const SidebarText = TextoBarraLateral;
-export const SidebarMenu = MenuBarraLateral;
-export const SidebarToggleButton = BotaoItemBarraLateral;
-export const SidebarSubToggleButton = BotaoSubitemBarraLateral;

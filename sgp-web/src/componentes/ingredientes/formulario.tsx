@@ -41,7 +41,7 @@ const FormularioIngrediente = ({
   const queryClient = useQueryClient()
 
   const { dados: categorias } = useObterPaginado<CategoriaIngrediente>({ endpoint: ROTAS_API.INGREDIENTE.CATEGORIA })
-  const { dados: unidadesMedida } = useObterPaginado<UnidadeMedida>({ endpoint: ROTAS_API.INGREDIENTE.UM })
+  const { dados: unidadesMedida } = useObterPaginado<UnidadeMedida>({ endpoint: ROTAS_API.UNIDADE.BASE })
 
   const criarIngredienteMutacao = useCriar<Ingrediente, CriarIngrediente>({
     onSuccess: (dadosCriados) => {
@@ -111,7 +111,7 @@ const FormularioIngrediente = ({
         <CampoSelecaoFormulario<CriarIngrediente>
           name="idUnidadeIngrediente"
           label={mensagens.formularios.ingrediente.unidade}
-          options={unidadesMedida?.map((um) => ({ label: um.nomeUnidade, value: um.idUnidadeIngrediente })) ?? []}
+          options={unidadesMedida?.map((um) => ({ label: um.nomeUnidadeMedida, value: um.idUnidadeMedida })) ?? []}
           size="small"
           fullWidth
         />

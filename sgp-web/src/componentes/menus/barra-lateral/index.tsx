@@ -19,6 +19,7 @@ import {
   MenuBarraLateral,
   TextoBarraLateral,
 } from './estilos';
+import { coresPadaria } from '@/tema';
 
 const itensMenu = [
   {
@@ -40,6 +41,11 @@ const itensMenu = [
     icone: <GrainIcon />,
     filhos: [
       {
+        rotulo: mensagens.navegacao.ingredientes,
+        valor: 'ingredientes',
+        caminho: '/ingredientes'
+      },
+      {
         rotulo: mensagens.navegacao.categorias,
         valor: 'categorias',
         caminho: '/ingredientes/categorias',
@@ -58,54 +64,54 @@ const itensMenu = [
     caminho: '/vendas',
     icone: <PointOfSaleIcon />,
   },
+  {
+    rotulo: 'Unidades de Medida',
+    valor: 'unidades-medida',
+    caminho: '/unidades-medida',
+    icone: <PointOfSaleIcon />,
+  },
 ];
 
 const BarraLateral = () => {
-  const { recolhida, alternarRecolhida } = useBarraLateral();
   const tema = useTheme();
-  const ehCompacto = useMediaQuery(tema.breakpoints.down('sm'));
-  const recolhidaEfetiva = recolhida || ehCompacto;
-
+  const { recolhida, alternarRecolhida } = useBarraLateral();
 
   const navegar = useNavigate();
   const localizacao = useLocation();
 
-  // Para saber se estamos na rota pai ou em uma filha (ex: ingredientes ou ingredientes/categorias)
   const rotaAtiva = localizacao.pathname;
-  
-  // Estado para controlar quais menus estão expandidos
+
   const [expandidos, setExpandidos] = useState<Record<string, boolean>>({});
 
   const alternarExpansao = (valor: string) => {
-    if (recolhidaEfetiva) {
-      alternarRecolhida(); // Expande a barra lateral se estiver recolhida
+    if (recolhida) {
+      alternarRecolhida();
     }
     setExpandidos((prev) => ({ ...prev, [valor]: !prev[valor] }));
   };
 
   return (
-    <ConteinerBarraLateral recolhida={recolhidaEfetiva}>
+    <ConteinerBarraLateral recolhida={recolhida}>
       <CabecalhoBarraLateral>
         <EspacoIconeBarraLateral>
           <IconButton
             onClick={alternarRecolhida}
-            disabled={ehCompacto}
             sx={{
               width: 40,
               height: 40,
               color: 'whitesmoke',
             }}
           >
-            {recolhidaEfetiva ? <ChevronRight /> : <ChevronLeft />}
+            {recolhida ? <ChevronRight /> : <ChevronLeft />}
           </IconButton>
         </EspacoIconeBarraLateral>
 
         <Stack>
-          <TextoBarraLateral recolhida={recolhidaEfetiva} variant="h6">
+          <TextoBarraLateral recolhida={recolhida} variant="h6">
             {mensagens.aplicativo.nomeCurto}
           </TextoBarraLateral>
 
-          <TextoBarraLateral recolhida={recolhidaEfetiva} variant="caption">
+          <TextoBarraLateral recolhida={recolhida} variant="caption">
             {mensagens.aplicativo.nome}
           </TextoBarraLateral>
         </Stack>
@@ -118,34 +124,37 @@ const BarraLateral = () => {
 
           return (
             <Stack key={item.valor}>
-              <Tooltip title={recolhidaEfetiva ? item.rotulo : ''} placement="right">
+              <Tooltip title={recolhida ? item.rotulo : ''} placement="right">
                 <BotaoItemBarraLateral
                   value={item.valor}
-                  selected={selecionado}
+                  selected={selecionado || expandido}
                   onClick={() => {
                     if (item.filhos) {
+                      navegar(item.caminho);
                       alternarExpansao(item.valor);
+                    } else {
+                      navegar(item.caminho);
+                      setExpandidos({})
                     }
-                    navegar(item.caminho);
                   }}
                 >
                   <EspacoIconeBarraLateral>
                     {item.icone}
                   </EspacoIconeBarraLateral>
 
-                  <TextoBarraLateral recolhida={recolhidaEfetiva} variant="body2" sx={{ flexGrow: 1, textAlign: 'left' }}>
+                  <TextoBarraLateral recolhida={recolhida} variant="body2" sx={{ flexGrow: 1, textAlign: 'left' }}>
                     {item.rotulo}
                   </TextoBarraLateral>
 
-                  {item.filhos && !recolhidaEfetiva && (
+                  {item.filhos && !recolhida && (
                     expandido ? <ExpandLess fontSize="small" sx={{ color: 'inherit' }} /> : <ExpandMore fontSize="small" sx={{ color: 'inherit' }} />
                   )}
                 </BotaoItemBarraLateral>
               </Tooltip>
 
               {item.filhos && (
-                <Collapse in={expandido && !recolhidaEfetiva} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
+                <Collapse in={expandido && !recolhida} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding sx={{ paddingTop: 1, background: coresPadaria.barraLateralHover, mx: 1, borderRadius: '0px 0px 16px 16px' }} >
                     {item.filhos.map((filho) => (
                       <BotaoSubitemBarraLateral
                         key={filho.valor}
@@ -153,7 +162,7 @@ const BarraLateral = () => {
                         selected={rotaAtiva === filho.caminho}
                         onClick={() => navegar(filho.caminho)}
                       >
-                        <TextoBarraLateral recolhida={recolhidaEfetiva} variant="body2">
+                        <TextoBarraLateral recolhida={recolhida} variant="body2">
                           {filho.rotulo}
                         </TextoBarraLateral>
                       </BotaoSubitemBarraLateral>

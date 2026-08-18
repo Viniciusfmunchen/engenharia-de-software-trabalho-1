@@ -18,6 +18,8 @@ const ListaCamposIngredientes = ({ ingredientes }: PropriedadesListaCamposIngred
     name: 'ingredientes',
   });
 
+  console.log(fields)
+
   const adicionarIngrediente = () =>
     append({
       idIngrediente: ingredientes[0]?.idIngrediente ?? 1,
@@ -43,7 +45,7 @@ const ListaCamposIngredientes = ({ ingredientes }: PropriedadesListaCamposIngred
 
       {fields.map((campo, indice) => (
         <Stack
-          key={campo.id}
+          key={campo.idIngrediente}
           direction={{ xs: 'column', sm: 'row' }}
           sx={{ alignItems: { sm: 'flex-start' }, gap: 1 }}
         >

@@ -1,6 +1,5 @@
 import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router';
-import Ingredientes from './paginas/ingredientes';
 import LayoutAplicacao from './layouts/aplicacao';
 
 const BoasVindas = lazy(() => import('@/paginas/boas-vindas'));
@@ -10,6 +9,8 @@ const Compras = lazy(() => import('@/paginas/compras'));
 const Vendas = lazy(() => import('@/paginas/vendas'));
 const Relatorios = lazy(() => import('@/paginas/relatorios'));
 const Categorias = lazy(() => import('@/paginas/ingredientes/categorias'));
+const Ingredientes = lazy(() => import('@/paginas/ingredientes'));
+const UnidadesMedida = lazy(() => import('@/paginas/unidades-medida'))
 
 export const roteador = createBrowserRouter([
   {
@@ -21,8 +22,8 @@ export const roteador = createBrowserRouter([
         Component: BoasVindas,
       },
       {
-         path: 'painel',
-         Component: Painel,
+        path: 'painel',
+        Component: Painel,
       },
       {
         path: 'receitas',
@@ -35,6 +36,10 @@ export const roteador = createBrowserRouter([
       {
         path: 'ingredientes/categorias',
         Component: Categorias,
+      },
+      {
+        path: 'unidades-medida',
+        Component: UnidadesMedida
       },
       {
         path: 'compras',

@@ -10,6 +10,9 @@ export const ROTAS_API = {
     CATEGORIA: '/ingrediente/categoria',
     UM: '/ingrediente/unidade'
   },
+  UNIDADE: {
+    BASE: '/unidade'
+  },
   ASSISTENTE: {
     CHAT: '/assistant/chat',
   },

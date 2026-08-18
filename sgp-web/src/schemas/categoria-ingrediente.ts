@@ -6,3 +6,7 @@ export const categoriaIngredienteSchema = z.object({
 });
 
 export type CategoriaIngrediente = z.infer<typeof categoriaIngredienteSchema>;
+
+export const criarCategoriaIngredienteSchema = categoriaIngredienteSchema.omit({ idCategoriaIngrediente: true })
+
+export type CriarCategoriaIngrediente = z.infer<typeof criarCategoriaIngredienteSchema>
