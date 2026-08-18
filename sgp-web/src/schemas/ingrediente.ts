@@ -10,8 +10,8 @@ export const ingredienteSchema = z.object({
     .string({ error: mensagens.validacao.obrigatorio })
     .min(1, 'O nome do ingrediente é obrigatório.'),
   categoriaIngrediente: categoriaIngredienteSchema,
-  unidadeIngrediente: unidadeMedidaIngredienteSchema,
-  precoPorUnidade: z.number().nonnegative(),
+  unidadeMedida: unidadeMedidaIngredienteSchema,
+  custoPorUnidade: z.number().nonnegative(),
   estoqueAtual: z.number().int().nonnegative(),
   estoqueMinimo: z.number().int().nonnegative(),
 });
@@ -34,8 +34,8 @@ export type AdicionarIngredienteReceita = z.infer<typeof adicionarIngredienteRec
 export const criarIngredienteSchema = z.object({
   nomeIngrediente: z.string(),
   idCategoriaIngrediente: z.coerce.number(),
-  idUnidadeIngrediente: z.coerce.number(),
-  precoPorUnidade: z.coerce.number(),
+  idUnidadeMedida: z.coerce.number(),
+  custoPorUnidade: z.coerce.number(),
   estoqueAtual: z.coerce.number(),
   estoqueMinimo: z.coerce.number()
 })

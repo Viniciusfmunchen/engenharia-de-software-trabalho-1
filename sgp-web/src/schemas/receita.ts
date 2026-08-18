@@ -50,6 +50,8 @@ export const producaoSimuladaSchema = z.object({
   ingredientesSuficientes: z.boolean(),
   ingredientes: z.object({
     nomeIngrediente: z.string(),
+    categoriaIngrediente: z.object({ nomeCategoria: z.string() }).optional(),
+    unidadeMedida: z.object({ abreviacao: z.string() }).optional(),
     quantidadeNecessaria: z.coerce.number(),
     estoqueAtual: z.coerce.number(),
     saldoAposProducao: z.coerce.number(),

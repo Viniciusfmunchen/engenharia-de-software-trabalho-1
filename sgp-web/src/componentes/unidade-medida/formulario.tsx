@@ -1,18 +1,20 @@
 import ModalFormulario from '../ui/formularios/modal'
 import { useForm } from 'react-hook-form'
-import { type CriarUnidadeMedida, criarUnidadeMedidaSchema, type UnidadeMedida, unidadeMedidaIngredienteSchema } from '@/schemas/unidade-medida'
+import { type CriarUnidadeMedida, criarUnidadeMedidaSchema, type UnidadeMedida } from '@/schemas/unidade-medida'
 import { resolverZod } from '@/utils/resolver'
 import { CampoTextoFormulario } from '../ui/formularios/campos'
-import { useCriar } from '@/hooks/mutacao'
+import { useAtualizar, useCriar } from '@/hooks/mutacao'
 import { ROTAS_API } from '@/constantes/rotas-api'
 import { useQueryClient } from '@tanstack/react-query'
+import { useEffect } from 'react'
 
 interface PropriedadesFormularioUnidadeMedida {
     aberto?: boolean
     aoFechar: () => void
+    unidadeEditando?: UnidadeMedida
 }
 
-const FormularioUnidadeMedida = ({ aberto, aoFechar }: PropriedadesFormularioUnidadeMedida) => {
+const FormularioUnidadeMedida = ({ aberto, aoFechar, unidadeEditando }: PropriedadesFormularioUnidadeMedida) => {
     const form = useForm<CriarUnidadeMedida>({
         resolver: resolverZod(criarUnidadeMedidaSchema),
         defaultValues: {
@@ -21,29 +23,47 @@ const FormularioUnidadeMedida = ({ aberto, aoFechar }: PropriedadesFormularioUni
         }
     })
 
+    useEffect(() => {
+        if (unidadeEditando) {
+            form.reset({
+                nomeUnidadeMedida: unidadeEditando.nomeUnidadeMedida,
+                abreviacao: unidadeEditando.abreviacao
+            });
+        } else {
+            form.reset({ nomeUnidadeMedida: '', abreviacao: '' });
+        }
+    }, [unidadeEditando, form]);
+
     const queryClient = useQueryClient()
+    
     const mutacaoCriarUnidadeMedida = useCriar<UnidadeMedida, CriarUnidadeMedida>({
-        onSuccess: (dadosCriados) => {
-            console.log('Receita criada com sucesso:', dadosCriados);
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [ROTAS_API.UNIDADE.BASE] });
         },
-        onError: (erro) => {
-            console.error('Erro ao salvar receita:', erro);
+    });
+
+    const mutacaoAtualizarUnidadeMedida = useAtualizar<UnidadeMedida, CriarUnidadeMedida>({
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [ROTAS_API.UNIDADE.BASE] });
         },
     });
 
     const manipularFechamento = () => {
-        form.reset();
+        form.reset({ nomeUnidadeMedida: '', abreviacao: '' });
         aoFechar()
     };
 
     const manipularSubmissao = (valores: CriarUnidadeMedida) => {
-        mutacaoCriarUnidadeMedida.mutate({ endpoint: ROTAS_API.UNIDADE.BASE, payload: valores });
+        if (unidadeEditando) {
+            mutacaoAtualizarUnidadeMedida.mutate({ endpoint: `${ROTAS_API.UNIDADE.BASE}/${unidadeEditando.idUnidadeMedida}`, payload: valores });
+        } else {
+            mutacaoCriarUnidadeMedida.mutate({ endpoint: ROTAS_API.UNIDADE.BASE, payload: valores });
+        }
         manipularFechamento();
     };
 
     return (
-        <ModalFormulario titulo='Cadastrar Unidade de Medida' formulario={form} aoSubmeter={manipularSubmissao} aberto={aberto} aoFechar={manipularFechamento}>
+        <ModalFormulario titulo={unidadeEditando ? 'Editar Unidade de Medida' : 'Cadastrar Unidade de Medida'} formulario={form} aoSubmeter={manipularSubmissao} aberto={aberto} aoFechar={manipularFechamento}>
             <CampoTextoFormulario
                 name="nomeUnidadeMedida"
                 label='Nome'
@@ -55,7 +75,6 @@ const FormularioUnidadeMedida = ({ aberto, aoFechar }: PropriedadesFormularioUni
                 name="abreviacao"
                 label='Abreviação'
                 size="small"
-                autoFocus
                 fullWidth
             />
         </ModalFormulario>

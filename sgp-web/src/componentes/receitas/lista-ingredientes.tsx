@@ -1,10 +1,13 @@
 import type { IngredienteReceita } from '@/schemas/ingrediente';
-import { Stack, Typography } from '@mui/material';
+import { IconButton, Stack, Typography } from '@mui/material';
+import { Delete } from '@mui/icons-material';
 
 export const ListaIngredientesReceita = ({
   ingredientes,
+  onExcluir,
 }: {
   ingredientes: IngredienteReceita[];
+  onExcluir?: (idIngrediente: number) => void;
 }) => {
   return (
     <Stack component="ul" sx={{ gap: 2, listStyle: 'none', p: 0 }}>
@@ -18,18 +21,26 @@ export const ListaIngredientesReceita = ({
             gap: 1,
             borderBottom: '1px solid #f1e7d8',
             py: 1,
+            alignItems: 'center',
           }}
         >
           <Stack>
             <Typography variant="body1">{ingrediente.nomeIngrediente}</Typography>
             <Typography variant="caption" color="text.secondary">
-              {ingrediente.categoriaIngrediente.nomeCategoria}
+              {ingrediente.categoriaIngrediente?.nomeCategoria || ''}
             </Typography>
           </Stack>
-          <Typography variant="subtitle2">
-            {ingrediente.quantidade.toLocaleString('pt-BR')}{' '}
-            {ingrediente.unidadeIngrediente.abreviacaoUnidade}
-          </Typography>
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Typography variant="subtitle2">
+              {ingrediente.quantidade.toLocaleString('pt-BR')}{' '}
+              {ingrediente.unidadeMedida?.abreviacao || ''}
+            </Typography>
+            {onExcluir && (
+              <IconButton size="small" color="error" onClick={() => onExcluir(ingrediente.idIngrediente)}>
+                <Delete fontSize="small" />
+              </IconButton>
+            )}
+          </Stack>
         </Stack>
       ))}
     </Stack>

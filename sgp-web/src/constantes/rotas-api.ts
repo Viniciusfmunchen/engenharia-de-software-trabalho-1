@@ -14,7 +14,7 @@ export const ROTAS_API = {
     BASE: '/unidade'
   },
   ASSISTENTE: {
-    CHAT: '/assistant/chat',
+    CHAT: '/assistente/chat',
   },
   COMPRA: {
     BASE: '/compra',

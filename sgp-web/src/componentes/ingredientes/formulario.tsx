@@ -26,8 +26,8 @@ interface PropriedadesFormularioIngrediente {
 const valoresPadrao: CriarIngrediente = {
   nomeIngrediente: '',
   idCategoriaIngrediente: 0,
-  idUnidadeIngrediente: 0,
-  precoPorUnidade: 0,
+  idUnidadeMedida: 0,
+  custoPorUnidade: 0,
   estoqueAtual: 0,
   estoqueMinimo: 0,
 };
@@ -109,7 +109,7 @@ const FormularioIngrediente = ({
           fullWidth
         />
         <CampoSelecaoFormulario<CriarIngrediente>
-          name="idUnidadeIngrediente"
+          name="idUnidadeMedida"
           label={mensagens.formularios.ingrediente.unidade}
           options={unidadesMedida?.map((um) => ({ label: um.nomeUnidadeMedida, value: um.idUnidadeMedida })) ?? []}
           size="small"
@@ -119,7 +119,7 @@ const FormularioIngrediente = ({
 
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 2 }}>
         <CampoTextoFormulario<CriarIngrediente>
-          name="precoPorUnidade"
+          name="custoPorUnidade"
           label={mensagens.formularios.ingrediente.custoPorUnidade}
           type="number"
           size="small"

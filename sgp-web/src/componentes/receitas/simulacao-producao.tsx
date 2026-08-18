@@ -112,7 +112,7 @@ const SimulacaoProducao = () => {
                   <Stack>
                     <Typography variant="body1">{ingrediente.nomeIngrediente}</Typography>
                     <Typography variant="caption" color="text.secondary">
-                      ##falta categoria##
+                      {ingrediente.categoriaIngrediente?.nomeCategoria || ''}
                     </Typography>
                   </Stack>
                   <Stack direction='row' spacing={2} sx={{ justifyContent: 'center', alignItems: 'center' }}>

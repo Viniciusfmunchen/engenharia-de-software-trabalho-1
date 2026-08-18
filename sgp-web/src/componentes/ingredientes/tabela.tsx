@@ -28,7 +28,7 @@ const TabelaIngredientes = ({
       label: mensagens.comum.estoque,
       align: 'right',
       render: (linha) =>
-        `${linha.estoqueAtual.toLocaleString('pt-BR')} ${linha.unidadeIngrediente.abreviacaoUnidade}`,
+        `${linha.estoqueAtual.toLocaleString('pt-BR')} ${linha.unidadeMedida.abreviacao}`,
       sortAccessor: (linha) => linha.estoqueAtual,
     },
     {
@@ -36,15 +36,15 @@ const TabelaIngredientes = ({
       label: mensagens.comum.minimo,
       align: 'right',
       render: (linha) =>
-        `${linha.estoqueMinimo.toLocaleString('pt-BR')} ${linha.unidadeIngrediente.abreviacaoUnidade}`,
+        `${linha.estoqueMinimo.toLocaleString('pt-BR')} ${linha.unidadeMedida.abreviacao}`,
       sortAccessor: (linha) => linha.estoqueMinimo,
     },
     {
-      id: 'precoPorUnidade',
+      id: 'custoPorUnidade',
       label: mensagens.comum.custoUnitario,
       align: 'right',
-      render: (linha) => formatarMoeda(linha.precoPorUnidade),
-      sortAccessor: (linha) => linha.precoPorUnidade,
+      render: (linha) => formatarMoeda(linha.custoPorUnidade),
+      sortAccessor: (linha) => linha.custoPorUnidade,
     },
     /*  {
        id: 'status',

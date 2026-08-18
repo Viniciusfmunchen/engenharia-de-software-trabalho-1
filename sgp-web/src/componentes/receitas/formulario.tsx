@@ -15,6 +15,8 @@ import { resolverZod } from '@/utils/resolver';
 import { Stack } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
+import type { UnidadeMedida } from '@/schemas/unidade-medida';
+import { CampoSelecaoFormulario } from '@/componentes/ui/formularios/campos';
 
 interface PropriedadesFormularioReceita {
   idReceita?: string | number;
@@ -40,6 +42,11 @@ const FormularioReceita = ({
 }: PropriedadesFormularioReceita) => {
   const { dados: ingredientes } = useObterPaginado<Ingrediente>({
     endpoint: ROTAS_API.INGREDIENTE.BASE,
+    paginado: false
+  });
+
+  const { dados: unidadesMedida } = useObterPaginado<UnidadeMedida>({
+    endpoint: ROTAS_API.UNIDADE.BASE,
     paginado: false
   });
 
@@ -131,13 +138,12 @@ const FormularioReceita = ({
       />
 
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 2 }}>
-        <CampoTextoFormulario<CriarReceita>
-          name="precoVenda"
-          label={mensagens.formularios.receita.precoVenda}
-          type="number"
+        <CampoSelecaoFormulario<CriarReceita>
+          name="idUnidadeMedida"
+          label="Unidade de Medida"
+          options={unidadesMedida?.map((um) => ({ label: um.nomeUnidadeMedida, value: um.idUnidadeMedida })) ?? []}
           size="small"
           fullWidth
-          slotProps={{ htmlInput: { min: 0, step: '0.01' } }}
         />
         <CampoTextoFormulario<CriarReceita>
           name="rendimento"
@@ -148,8 +154,16 @@ const FormularioReceita = ({
           slotProps={{ htmlInput: { min: 1, step: 1 } }}
         />
         <CampoTextoFormulario<CriarReceita>
-          name="tempoPreparacao"
+          name="tempoPreparo"
           label={mensagens.formularios.receita.tempoPreparo}
+          type="number"
+          size="small"
+          fullWidth
+          slotProps={{ htmlInput: { min: 1, step: 1 } }}
+        />
+        <CampoTextoFormulario<CriarReceita>
+          name="validade"
+          label="Validade (dias)"
           type="number"
           size="small"
           fullWidth
@@ -157,7 +171,7 @@ const FormularioReceita = ({
         />
       </Stack>
 
-      <ListaCamposIngredientes ingredientes={ingredientes ?? []} />
+      {!idReceita && <ListaCamposIngredientes ingredientes={ingredientes ?? []} />}
     </ModalFormulario>
   );
 };

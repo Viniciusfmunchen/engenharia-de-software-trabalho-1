@@ -12,4 +12,4 @@ export const criarUnidadeMedidaSchema = unidadeMedidaIngredienteSchema.omit({
   idUnidadeMedida: true
 })
 
-export type CriarUnidadeMedida = z.infer<typeof unidadeMedidaIngredienteSchema>;
+export type CriarUnidadeMedida = z.infer<typeof criarUnidadeMedidaSchema>;
