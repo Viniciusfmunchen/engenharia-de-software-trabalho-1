@@ -16,24 +16,19 @@ const ResumoReceita = ({ receita }: PropriedadesResumoReceita) => {
   return (
     <Stack direction="row" sx={{ gap: 2, flexWrap: 'wrap' }}>
       <Resumo
-        icon={<AttachMoneyIcon fontSize="small" />}
-        label={mensagens.paginas.receitas.precoVenda}
-        value={formatarMoeda(receita.precoVenda)}
-      />
-      <Resumo
         icon={<Inventory2Icon fontSize="small" />}
         label={mensagens.paginas.receitas.custoReceita}
-        value={formatarMoeda(receita.precoPorReceita ?? 0)}
+        value={formatarMoeda(receita.custoPorReceita ?? 0)}
       />
       <Resumo
         icon={<AttachMoneyIcon fontSize="small" />}
         label={mensagens.paginas.receitas.custoPorUnidade}
-        value={formatarMoeda(receita.precoPorUnidade ?? 0)}
+        value={formatarMoeda(receita.custoPorUnidade ?? 0)}
       />
       <Resumo
         icon={<AccessTimeIcon fontSize="small" />}
         label={mensagens.paginas.receitas.preparo}
-        value={formatarTempo(receita.tempoPreparacao)}
+        value={formatarTempo(receita.tempoPreparo)}
       />
     </Stack>
   );

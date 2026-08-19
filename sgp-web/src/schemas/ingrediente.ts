@@ -25,19 +25,19 @@ export const ingredienteReceitaSchema = ingredienteSchema.extend({
 export type IngredienteReceita = z.infer<typeof ingredienteReceitaSchema>;
 
 export const adicionarIngredienteReceitaSchema = z.object({
-  idIngrediente: z.coerce.number(),
-  quantidade: z.coerce.number(),
+  idIngrediente: z.coerce.number().min(1, 'Selecione um ingrediente'),
+  quantidade: z.coerce.number().positive('A quantidade deve ser maior que zero'),
 });
 
 export type AdicionarIngredienteReceita = z.infer<typeof adicionarIngredienteReceitaSchema>;
 
 export const criarIngredienteSchema = z.object({
-  nomeIngrediente: z.string(),
-  idCategoriaIngrediente: z.coerce.number(),
-  idUnidadeMedida: z.coerce.number(),
-  custoPorUnidade: z.coerce.number(),
-  estoqueAtual: z.coerce.number(),
-  estoqueMinimo: z.coerce.number()
+  nomeIngrediente: z.string().min(1, 'O nome é obrigatório'),
+  idCategoriaIngrediente: z.coerce.number().min(1, 'Selecione uma categoria'),
+  idUnidadeMedida: z.coerce.number().min(1, 'Selecione uma unidade de medida'),
+  custoPorUnidade: z.coerce.number().min(0, 'Não pode ser negativo'),
+  estoqueAtual: z.coerce.number().min(0, 'Não pode ser negativo'),
+  estoqueMinimo: z.coerce.number().min(0, 'Não pode ser negativo')
 })
 
 export type CriarIngrediente = z.infer<typeof criarIngredienteSchema>

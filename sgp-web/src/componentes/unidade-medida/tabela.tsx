@@ -28,7 +28,7 @@ const TabelaUnidadeMedida = ({ unidadesMedida, aoEditar, aoExcluir }: Propriedad
             label: 'Ações',
             align: 'center',
             render: (linha) => (
-                <Stack direction="row" spacing={1} justifyContent="center">
+                <Stack direction="row" spacing={1} sx={{ justifyContent: 'center' }}>
                     {aoEditar && (
                         <IconButton size="small" color="primary" onClick={() => aoEditar(linha)}>
                             <Edit fontSize="small" />

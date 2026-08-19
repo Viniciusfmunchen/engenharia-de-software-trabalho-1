@@ -7,6 +7,7 @@ import {
 import { useBarraLateral } from '@/contextos/barra-lateral';
 import { Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { Outlet } from 'react-router';
+import Chat from '@/componentes/chat';
 
 const LayoutAplicacao = () => {
   const { recolhida } = useBarraLateral();
@@ -45,6 +46,7 @@ const LayoutAplicacao = () => {
           {mensagens.aplicativo.slogan}
         </Typography>
         <Outlet />
+        <Chat />
       </Stack>
     </Stack>
   );

@@ -3,7 +3,7 @@ import {
   LARGURA_BARRA_LATERAL_RECOLHIDA,
 } from '@/constantes/interface';
 import { coresPadaria } from '@/tema';
-import { ThemeContext } from '@emotion/react';
+
 import { Box, Stack, ToggleButton, Typography, styled } from '@mui/material';
 
 export const ConteinerBarraLateral = styled(Box, {

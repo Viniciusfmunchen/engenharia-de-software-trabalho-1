@@ -22,7 +22,7 @@ const ListaCamposIngredientes = ({ ingredientes }: PropriedadesListaCamposIngred
 
   const adicionarIngrediente = () =>
     append({
-      idIngrediente: ingredientes[0]?.idIngrediente ?? 1,
+      idIngrediente: 0,
       quantidade: 1,
     });
 

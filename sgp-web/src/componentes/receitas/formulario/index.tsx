@@ -2,7 +2,7 @@ import { CampoTextoFormulario } from '@/componentes/ui/formularios/campos';
 import ModalFormulario from '@/componentes/ui/formularios/modal';
 import { mensagens } from '@/constantes/mensagens';
 import { ROTAS_API } from '@/constantes/rotas-api';
-import { useAtualizarParcial, useCriar } from '@/hooks/mutacao';
+import { useAtualizar, useCriar } from '@/hooks/mutacao';
 import { useObter, useObterPaginado } from '@/hooks/consulta';
 import {
   criarReceitaSchema,
@@ -10,7 +10,7 @@ import {
   type Receita,
 } from '@/schemas/receita';
 import type { Ingrediente } from '@/schemas/ingrediente';
-import ListaCamposIngredientes from './formulario/lista-campos-ingredientes';
+import ListaCamposIngredientes from './lista-campos-ingredientes';
 import { resolverZod } from '@/utils/resolver';
 import { Stack } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
@@ -25,7 +25,14 @@ interface PropriedadesFormularioReceita {
   aoSubmeter?: (valores: CriarReceita) => void;
 }
 
-const obterValoresPadrao = (receita?: Receita): CriarReceita => (receita ? { ...receita, idUnidadeMedida: receita.unidadeMedida.idUnidadeMedida } : {
+const obterValoresPadrao = (receita?: Receita): CriarReceita => (receita ? { 
+  ...receita, 
+  idUnidadeMedida: receita.unidadeMedida.idUnidadeMedida,
+  ingredientes: receita.ingredientes.map(i => ({
+    idIngrediente: i.idIngrediente,
+    quantidade: i.quantidade
+  }))
+} : {
   nomeReceita: '',
   rendimento: 0,
   tempoPreparo: 0,
@@ -69,7 +76,7 @@ const FormularioReceita = ({
     },
   });
 
-  const mutacaoEditarReceita = useAtualizarParcial<Receita, CriarReceita>({
+  const mutacaoEditarReceita = useAtualizar<Receita, CriarReceita>({
     onSuccess: (dadosAtualizados) => {
       console.log('Receita editada com sucesso:', dadosAtualizados);
       queryClient.invalidateQueries({ queryKey: [ROTAS_API.RECEITA.BASE] });
@@ -80,20 +87,7 @@ const FormularioReceita = ({
     onError: (erro) => {
       console.error('Erro ao atualizar receita:', erro);
     }
-  })
-
-  const mutacaoEditarIngredientesReceita = useAtualizarParcial<Receita, CriarReceita>({
-    onSuccess: (dadosAtualizados) => {
-      console.log('Ingredientes da receita editada com sucesso:', dadosAtualizados);
-      queryClient.invalidateQueries({ queryKey: [ROTAS_API.RECEITA.BASE] });
-      if (idReceita) {
-        queryClient.invalidateQueries({ queryKey: [ROTAS_API.RECEITA.POR_ID(idReceita)] });
-      }
-    },
-    onError: (erro) => {
-      console.error('Erro ao atualizar ingredientes da receita:', erro);
-    }
-  })
+  });
 
   const formulario = useForm<CriarReceita>({
     resolver: resolverZod(criarReceitaSchema),
@@ -101,7 +95,7 @@ const FormularioReceita = ({
   });
 
   const manipularFechamento = () => {
-    formulario.reset(receita);
+    formulario.reset(valoresPadrao);
     aoFechar();
   };
 
@@ -109,10 +103,8 @@ const FormularioReceita = ({
     if (idReceita) {
       console.log(valores)
       mutacaoEditarReceita.mutate({ endpoint: ROTAS_API.RECEITA.POR_ID(idReceita), payload: valores })
-      valores.ingredientes.map((ingrediente) => {
-
-      })
     } else {
+      console.log(valores)
       mutacaoCriarReceita.mutate({ endpoint: ROTAS_API.RECEITA.BASE, payload: valores });
     }
     aoSubmeter(valores);
@@ -171,7 +163,7 @@ const FormularioReceita = ({
         />
       </Stack>
 
-      {!idReceita && <ListaCamposIngredientes ingredientes={ingredientes ?? []} />}
+      <ListaCamposIngredientes ingredientes={ingredientes ?? []} />
     </ModalFormulario>
   );
 };

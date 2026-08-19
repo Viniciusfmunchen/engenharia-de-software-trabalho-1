@@ -15,7 +15,7 @@ import FormularioReceita from '@/componentes/receitas/formulario';
 
 const Receitas = () => {
   const [formularioAberto, setFormularioAberto] = useState(false);
-  const [busca, setBusca] = useState(''); // filtros
+  const [busca, setBusca] = useState('');
   const { dados: receitas } = useObterPaginado<Receita>({
     endpoint: ROTAS_API.RECEITA.BASE,
   });

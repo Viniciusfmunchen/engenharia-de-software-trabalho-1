@@ -10,9 +10,9 @@ import { resolverZod } from '@/utils/resolver';
 import { Stack } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
-import { useAtualizarParcial, useCriar } from '@/hooks/mutacao';
+import { useAtualizar, useCriar } from '@/hooks/mutacao';
 import { ROTAS_API } from '@/constantes/rotas-api';
-import { useObterPaginado } from '@/hooks/consulta';
+import { useObter, useObterPaginado } from '@/hooks/consulta';
 import type { UnidadeMedida } from '@/schemas/unidade-medida';
 import type { CategoriaIngrediente } from '@/schemas/categoria-ingrediente';
 
@@ -23,15 +23,6 @@ interface PropriedadesFormularioIngrediente {
   idIngrediente?: string | number
 }
 
-const valoresPadrao: CriarIngrediente = {
-  nomeIngrediente: '',
-  idCategoriaIngrediente: 0,
-  idUnidadeMedida: 0,
-  custoPorUnidade: 0,
-  estoqueAtual: 0,
-  estoqueMinimo: 0,
-};
-
 const FormularioIngrediente = ({
   aberto,
   aoFechar = () => { },
@@ -40,8 +31,31 @@ const FormularioIngrediente = ({
 }: PropriedadesFormularioIngrediente) => {
   const queryClient = useQueryClient()
 
-  const { dados: categorias } = useObterPaginado<CategoriaIngrediente>({ endpoint: ROTAS_API.INGREDIENTE.CATEGORIA })
-  const { dados: unidadesMedida } = useObterPaginado<UnidadeMedida>({ endpoint: ROTAS_API.UNIDADE.BASE })
+  const { dados: categorias } = useObterPaginado<CategoriaIngrediente>({ endpoint: ROTAS_API.INGREDIENTE.CATEGORIA, paginado: false })
+  const { dados: unidadesMedida } = useObterPaginado<UnidadeMedida>({ endpoint: ROTAS_API.UNIDADE.BASE, paginado: false })
+
+  const valoresPadrao: CriarIngrediente = {
+    nomeIngrediente: '',
+    idCategoriaIngrediente: 0,
+    idUnidadeMedida: 0,
+    custoPorUnidade: 0,
+    estoqueAtual: 0,
+    estoqueMinimo: 0,
+  };
+
+  const { dados: ingredienteEditando } = useObter<Ingrediente>({
+    endpoint: ROTAS_API.INGREDIENTE.POR_ID(idIngrediente ?? ''),
+    habilitado: !!idIngrediente && aberto
+  });
+
+  const valores = idIngrediente && ingredienteEditando ? {
+    nomeIngrediente: ingredienteEditando.nomeIngrediente,
+    idCategoriaIngrediente: ingredienteEditando.categoriaIngrediente.idCategoriaIngrediente,
+    idUnidadeMedida: ingredienteEditando.unidadeMedida.idUnidadeMedida,
+    custoPorUnidade: ingredienteEditando.custoPorUnidade,
+    estoqueAtual: ingredienteEditando.estoqueAtual,
+    estoqueMinimo: ingredienteEditando.estoqueMinimo,
+  } : valoresPadrao;
 
   const criarIngredienteMutacao = useCriar<Ingrediente, CriarIngrediente>({
     onSuccess: (dadosCriados) => {
@@ -54,7 +68,7 @@ const FormularioIngrediente = ({
   })
 
 
-  const atualizarIngredienteMutacao = useAtualizarParcial<Ingrediente, CriarIngrediente>({
+  const atualizarIngredienteMutacao = useAtualizar<Ingrediente, CriarIngrediente>({
     onSuccess: (dadosAtualizados) => {
       console.log("Ingrediente atualizado com sucesso:", dadosAtualizados)
       queryClient.invalidateQueries({ queryKey: [ROTAS_API.INGREDIENTE.BASE] })
@@ -66,7 +80,7 @@ const FormularioIngrediente = ({
 
   const formulario = useForm<CriarIngrediente>({
     resolver: resolverZod(criarIngredienteSchema),
-    defaultValues: valoresPadrao,
+    values: valores,
   });
 
   const manipularFechamento = () => {

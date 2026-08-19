@@ -16,7 +16,9 @@ export const receitaSchema = z.object({
     .int('O tempo de preparo deve ser um número inteiro.'),
   ingredientes: z.array(ingredienteReceitaSchema),
   validade: z.coerce.number(),
-  unidadeMedida: unidadeMedidaIngredienteSchema
+  unidadeMedida: unidadeMedidaIngredienteSchema,
+  custoPorUnidade: z.coerce.number().optional(),
+  custoPorReceita: z.coerce.number().optional(),
 });
 
 export type Receita = z.infer<typeof receitaSchema>;
@@ -25,10 +27,11 @@ export const criarReceitaSchema = receitaSchema
   .omit({
     idReceita: true,
     ingredientes: true,
+    unidadeMedida: true,
   })
   .extend({
     ingredientes: z.array(adicionarIngredienteReceitaSchema).min(1, mensagens.validacao.minimoUmIngrediente),
-    idUnidadeMedida: z.coerce.number(),
+    idUnidadeMedida: z.coerce.number().min(1, 'Selecione uma unidade de medida'),
   });
 
 export type CriarReceita = z.infer<typeof criarReceitaSchema>;

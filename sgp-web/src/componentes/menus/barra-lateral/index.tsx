@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, ExpandLess, ExpandMore } from '@mui/icons-material';
+import { ChevronLeft, ChevronRight, ExpandLess, ExpandMore, Straighten } from '@mui/icons-material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import GrainIcon from '@mui/icons-material/Grain';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { Collapse, Divider, IconButton, List, Stack, Tooltip, useMediaQuery, useTheme } from '@mui/material';
+import { Collapse, Divider, IconButton, List, Stack, Tooltip } from '@mui/material';
 import { mensagens } from '@/constantes/mensagens';
 import { useBarraLateral } from '@/contextos/barra-lateral';
 import { useLocation, useNavigate } from 'react-router';
@@ -53,6 +53,12 @@ const itensMenu = [
     ],
   },
   {
+    rotulo: 'Unidades de Medida',
+    valor: 'unidades-medida',
+    caminho: '/unidades-medida',
+    icone: <Straighten />,
+  },
+  {
     rotulo: mensagens.navegacao.compras,
     valor: 'compras',
     caminho: '/compras',
@@ -64,16 +70,9 @@ const itensMenu = [
     caminho: '/vendas',
     icone: <PointOfSaleIcon />,
   },
-  {
-    rotulo: 'Unidades de Medida',
-    valor: 'unidades-medida',
-    caminho: '/unidades-medida',
-    icone: <PointOfSaleIcon />,
-  },
 ];
 
 const BarraLateral = () => {
-  const tema = useTheme();
   const { recolhida, alternarRecolhida } = useBarraLateral();
 
   const navegar = useNavigate();

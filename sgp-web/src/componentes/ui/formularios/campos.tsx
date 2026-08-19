@@ -61,7 +61,7 @@ export const CampoSelecaoFormulario = <T extends FieldValues>({
           {...field}
           {...props}
           select
-          value={field.value ?? ''}
+          value={field.value ?? 0}
           error={Boolean(fieldState.error)}
           helperText={fieldState.error?.message ?? helperText}
           slotProps={{
@@ -71,6 +71,9 @@ export const CampoSelecaoFormulario = <T extends FieldValues>({
             ...props.slotProps,
           }}
         >
+          <option value={0} disabled>
+            Selecione...
+          </option>
           {options.map((opcao) => (
             <option key={String(opcao.value)} value={opcao.value}>
               {opcao.label}

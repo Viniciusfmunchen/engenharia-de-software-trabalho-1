@@ -30,7 +30,7 @@ export const ListaIngredientesReceita = ({
               {ingrediente.categoriaIngrediente?.nomeCategoria || ''}
             </Typography>
           </Stack>
-          <Stack direction="row" spacing={2} alignItems="center">
+          <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
             <Typography variant="subtitle2">
               {ingrediente.quantidade.toLocaleString('pt-BR')}{' '}
               {ingrediente.unidadeMedida?.abreviacao || ''}

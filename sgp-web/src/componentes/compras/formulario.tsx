@@ -31,7 +31,7 @@ const obterValoresPadrao = (
   nomeFornecedor: fornecedores[0]?.nome ?? '',
   idIngrediente: ingredientes[0]?.idIngrediente ?? 0,
   quantidade: 0,
-  custoUnitario: ingredientes[0]?.precoPorUnidade ?? 0,
+  custoUnitario: ingredientes[0]?.custoPorUnidade ?? 0,
   status: 'Concluída',
 });
 

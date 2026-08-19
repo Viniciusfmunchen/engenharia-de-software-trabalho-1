@@ -10,10 +10,11 @@ import { Button } from '@mui/material';
 import { useState } from 'react';
 
 const Categorias = () => {
-  const [formAberto, setFormAberto] = useState<boolean>(false)
+  const [formAberto, setFormAberto] = useState<boolean>(false);
+
   const { dados: categorias } = useObterPaginado<CategoriaIngrediente>({
     endpoint: ROTAS_API.INGREDIENTE.CATEGORIA
-  })
+  });
 
   return (
     <LayoutPagina
@@ -27,10 +28,19 @@ const Categorias = () => {
             color: coresPadaria.textoClaro,
             '&:hover': { bgcolor: coresPadaria.barraLateralSelecionadaHover },
           }}
-          onClick={() => setFormAberto(true)} />}
+          onClick={() => {
+            setFormAberto(true);
+          }} >Nova Categoria</Button>}
     >
-      <FormularioCategoriaIngrediente aberto={formAberto} aoFechar={() => setFormAberto(false)} />
-      <TabelaCategoria categorias={categorias} />
+      <FormularioCategoriaIngrediente
+        aberto={formAberto}
+        aoFechar={() => {
+          setFormAberto(false);
+        }}
+      />
+      <TabelaCategoria
+        categorias={categorias}
+      />
     </LayoutPagina>
   );
 };

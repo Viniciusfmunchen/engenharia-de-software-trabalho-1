@@ -2,6 +2,7 @@ import { mensagens } from '@/constantes/mensagens';
 import Tabela, { type ColunaTabela } from '@/componentes/ui/tabela';
 import type { Ingrediente } from '@/schemas/ingrediente';
 import { formatarMoeda } from '@/utils/formatar-moeda';
+import { Chip } from '@mui/material';
 
 interface PropriedadesTabelaIngredientes {
   ingredientes?: Ingrediente[];
@@ -46,27 +47,27 @@ const TabelaIngredientes = ({
       render: (linha) => formatarMoeda(linha.custoPorUnidade),
       sortAccessor: (linha) => linha.custoPorUnidade,
     },
-    /*  {
-       id: 'status',
-       label: mensagens.comum.status,
-       render: (linha) => {
-         return (
-           <Chip
-             size="small"
-             label={status}
-             color={
-               status === mensagens.tabela.statusEstoque.ok
-                 ? 'success'
-                 : status === mensagens.tabela.statusEstoque.baixo
-                   ? 'warning'
-                   : 'error'
-             }
-             variant="outlined"
-           />
-         );
-       },
-       sortAccessor: (linha) => obterStatusEstoque(linha),
-     }, */
+    {
+      id: 'status',
+      label: mensagens.comum.status,
+      render: (linha) => {
+        const estoqueBaixo = linha.estoqueAtual <= linha.estoqueMinimo;
+        const estoqueEtiqueta = estoqueBaixo ? 'Cuidado' : 'OK'
+        return (
+          <Chip
+            size="small"
+            label={estoqueEtiqueta}
+            color={
+              linha.estoqueAtual > linha.estoqueMinimo
+                ? 'success'
+                : 'error'
+            }
+            variant="outlined"
+          />
+        );
+      },
+      sortAccessor: (linha) => (linha.estoqueAtual <= linha.estoqueMinimo ? 0 : 1),
+    },
   ];
 
   if (!ingredientes) return <>Nenhum ingrediente cadastrados</>

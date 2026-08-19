@@ -75,12 +75,13 @@ const VisualizacaoReceita = () => {
   return (
     <Conteiner
       titulo={receita.nomeReceita}
-      subtitulo={`${receita.rendimento ?? 0} ${mensagens.paginas.receitas.unidadesPorReceitaCompleto}`}
+      subtitulo={`${receita.rendimento ?? 0} ${receita.unidadeMedida.nomeUnidadeMedida}(s) por receita`}
       acao={
         <Stack direction="row" spacing={1}>
           <Button size="small" color="error" startIcon={<Delete />} onClick={() => {
-            if(window.confirm('Deseja realmente excluir esta receita?')) {
-               mutacaoExcluir.mutate({ endpoint: ROTAS_API.RECEITA.POR_ID(idReceitaSelecionada) })
+            if (window.confirm('Deseja realmente excluir esta receita?')) {
+              mutacaoExcluir.mutate({ endpoint: ROTAS_API.RECEITA.POR_ID(idReceitaSelecionada) })
+              searchParams.set('idReceita', '')
             }
           }}>
             Excluir
@@ -102,29 +103,21 @@ const VisualizacaoReceita = () => {
               direction="row"
               sx={{ justifyContent: 'space-between', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}
             >
-              <Stack direction="row" alignItems="center" spacing={1}>
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                 <Typography variant="h6">{mensagens.comum.ingredientes}</Typography>
-                <Button size="small" onClick={() => setAddIngredienteAberto(true)}>
-                  + Ingrediente
-                </Button>
               </Stack>
-              <Chip
-                color="success"
-                variant="outlined"
-                label={`${mensagens.paginas.receitas.lucroEstimadoPorUnidade} ${formatarMoeda(0)}`}
-              />
             </Stack>
             {receita.ingredientes.length > 0 ? (
-                <ListaIngredientesReceita 
-                    ingredientes={receita.ingredientes} 
-                    onExcluir={(idIngrediente) => {
-                        if (window.confirm("Remover este ingrediente?")) {
-                            mutacaoRemoverIngrediente.mutate({ endpoint: `${ROTAS_API.RECEITA.POR_ID(idReceitaSelecionada)}/ingrediente/${idIngrediente}` });
-                        }
-                    }} 
-                />
+              <ListaIngredientesReceita
+                ingredientes={receita.ingredientes}
+                onExcluir={(idIngrediente) => {
+                  if (window.confirm("Remover este ingrediente?")) {
+                    mutacaoRemoverIngrediente.mutate({ endpoint: `${ROTAS_API.RECEITA.POR_ID(idReceitaSelecionada)}/ingrediente/${idIngrediente}` });
+                  }
+                }}
+              />
             ) : (
-                <Typography variant="body2" color="text.secondary">Nenhum ingrediente adicionado.</Typography>
+              <Typography variant="body2" color="text.secondary">Nenhum ingrediente adicionado.</Typography>
             )}
           </Stack>
         )

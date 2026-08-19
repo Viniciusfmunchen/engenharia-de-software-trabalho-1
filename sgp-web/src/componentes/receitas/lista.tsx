@@ -95,17 +95,17 @@ const ListaReceitas = ({ receitas }: PropriedadesListaReceitas) => {
                 <Stack sx={{ gap: 0.5 }}>
                   <Typography variant="h6">{receita.nomeReceita}</Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {receita.rendimento ?? 0} {mensagens.paginas.receitas.unidadesPorReceita}
+                    {receita.rendimento ?? 0} {receita.unidadeMedida.abreviacao + '(s) por receita.'}
                   </Typography>
                 </Stack>
-                <Chip size="small" label={formatarMoeda(receita.precoVenda)} />
+                <Chip size="small" label={formatarMoeda(receita.custoPorReceita ?? 0)} />
               </Stack>
 
               <Stack direction="row" sx={{ gap: 1, flexWrap: 'wrap' }}>
                 <Chip
                   size="small"
                   icon={<AccessTimeIcon />}
-                  label={formatarTempo(receita.tempoPreparacao)}
+                  label={formatarTempo(receita.tempoPreparo)}
                 />
                 <Chip
                   size="small"

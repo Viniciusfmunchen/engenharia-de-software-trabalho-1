@@ -4,10 +4,11 @@ import Cartao from '@/componentes/ui/cartao';
 import Conteiner from '@/componentes/ui/conteiner';
 import { mensagens } from '@/constantes/mensagens';
 import { ROTAS_API } from '@/constantes/rotas-api';
-import { useObterPaginado } from '@/hooks/consulta';
+import { useObter, useObterPaginado } from '@/hooks/consulta';
 import LayoutPagina from '@/layouts/pagina';
 import type { Ingrediente } from '@/schemas/ingrediente';
 import { coresPadaria } from '@/tema';
+import { formatarMoeda } from '@/utils/formatar-moeda';
 
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
@@ -17,6 +18,10 @@ import { useState } from 'react';
 const Ingredientes = () => {
   const [busca, setBusca] = useState('');
   const [formularioAberto, setFormularioAberto] = useState(false);
+
+  const { dados: ingredientesInfo } = useObter<{ estoqueBaixo: number, valorTotalEstoque: number }>({
+    endpoint: `${ROTAS_API.INGREDIENTE.BASE}/info`
+  })
 
   const { dados: ingredientes, totalElementos } = useObterPaginado<Ingrediente>({
     endpoint: ROTAS_API.INGREDIENTE.BASE
@@ -34,7 +39,9 @@ const Ingredientes = () => {
             color: coresPadaria.textoClaro,
             '&:hover': { bgcolor: coresPadaria.barraLateralSelecionadaHover },
           }}
-          onClick={() => setFormularioAberto(true)}
+          onClick={() => {
+            setFormularioAberto(true);
+          }}
         >
           {mensagens.acoes.adicionarIngrediente}
         </Button>
@@ -47,30 +54,17 @@ const Ingredientes = () => {
             conteudo={totalElementos.toLocaleString('pt-BR')}
             informacao={mensagens.paginas.ingredientes.itensDisponiveis}
           />
-          {/* <Cartao
+          <Cartao
             titulo={mensagens.paginas.ingredientes.estoqueBaixo}
-            conteudo={resumo.quantidadeEstoqueBaixo.toLocaleString('pt-BR')}
-            informacao={`${resumo.quantidadeEstoqueCritico} ${mensagens.paginas.ingredientes.nivelCritico}`}
+            conteudo={ingredientesInfo?.estoqueBaixo.toLocaleString('pt-BR') ?? '-'}
+            informacao={mensagens.paginas.ingredientes.atencaoEstoque}
           />
           <Cartao
             titulo={mensagens.paginas.ingredientes.valorEstoque}
-            conteudo={formatarMoeda(resumo.valorEstoque)}
+            conteudo={formatarMoeda(ingredientesInfo?.valorTotalEstoque ?? 0)}
             informacao={mensagens.paginas.ingredientes.infoValorEstoque}
-          /> */}
+          />
         </Stack>
-
-        {/*  {ingredientesEstoqueBaixo.length > 0 && (
-          <Conteiner
-            titulo={mensagens.paginas.ingredientes.atencaoEstoque}
-            subtitulo={ingredientesEstoqueBaixo
-              .map((ingrediente) => ingrediente.nomeIngrediente)
-              .join(', ')}
-          >
-            <Typography variant="body2" color="text.secondary">
-              {mensagens.paginas.ingredientes.infoAtencaoEstoque}
-            </Typography>
-          </Conteiner>
-        )} */}
 
         <Conteiner>
           <TextField
@@ -92,12 +86,16 @@ const Ingredientes = () => {
           />
         </Conteiner>
 
-        <TabelaIngredientes ingredientes={ingredientes} />
+        <TabelaIngredientes
+          ingredientes={ingredientes}
+        />
       </Stack>
 
       <ModalFormularioIngrediente
         aberto={formularioAberto}
-        aoFechar={() => setFormularioAberto(false)}
+        aoFechar={() => {
+          setFormularioAberto(false);
+        }}
         aoSubmeter={(valores) => console.log(valores)}
       />
     </LayoutPagina>
