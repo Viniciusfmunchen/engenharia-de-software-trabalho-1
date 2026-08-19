@@ -25,8 +25,8 @@ interface PropriedadesFormularioReceita {
   aoSubmeter?: (valores: CriarReceita) => void;
 }
 
-const obterValoresPadrao = (receita?: Receita): CriarReceita => (receita ? { 
-  ...receita, 
+const obterValoresPadrao = (receita?: Receita): CriarReceita => (receita ? {
+  ...receita,
   idUnidadeMedida: receita.unidadeMedida.idUnidadeMedida,
   ingredientes: receita.ingredientes.map(i => ({
     idIngrediente: i.idIngrediente,
@@ -94,6 +94,10 @@ const FormularioReceita = ({
     values: valoresPadrao
   });
 
+  const { dados: unidadeMedida } = useObter<UnidadeMedida>({
+    endpoint: ROTAS_API.UNIDADE.POR_ID(formulario.watch('idUnidadeMedida'))
+  })
+
   const manipularFechamento = () => {
     formulario.reset(valoresPadrao);
     aoFechar();
@@ -115,7 +119,7 @@ const FormularioReceita = ({
   return (
     <ModalFormulario<CriarReceita>
       aberto={aberto}
-      titulo={mensagens.formularios.receita.titulo}
+      titulo={idReceita ? 'Editar Receita' : 'Cadastrar Receita'}
       formulario={formulario}
       aoFechar={manipularFechamento}
       aoSubmeter={manipularSubmissao}
@@ -123,7 +127,7 @@ const FormularioReceita = ({
     >
       <CampoTextoFormulario<CriarReceita>
         name="nomeReceita"
-        label={mensagens.formularios.receita.nome}
+        label='Nome da receita'
         size="small"
         autoFocus
         fullWidth
@@ -139,7 +143,7 @@ const FormularioReceita = ({
         />
         <CampoTextoFormulario<CriarReceita>
           name="rendimento"
-          label={mensagens.formularios.receita.rendimento}
+          label={mensagens.formularios.receita.rendimento + "(" + (unidadeMedida?.nomeUnidadeMedida ?? '-') + ")"}
           type="number"
           size="small"
           fullWidth

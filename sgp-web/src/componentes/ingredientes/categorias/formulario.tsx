@@ -68,7 +68,7 @@ const FormularioCategoriaIngrediente = ({ aberto, aoFechar, idCategoria }: Propr
     <ModalFormulario titulo='Cadastrar categoria de ingrediente' formulario={form} aoSubmeter={manipularSubmissao} aberto={aberto} aoFechar={manipularFechamento}>
       <CampoTextoFormulario
         name="nomeCategoria"
-        label='Abreviação'
+        label='Nome da categoria'
         size="small"
         autoFocus
         fullWidth

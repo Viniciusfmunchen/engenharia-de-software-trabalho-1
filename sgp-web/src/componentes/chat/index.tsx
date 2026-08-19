@@ -102,15 +102,15 @@ export default function Chat() {
             ...(ehMovel
               ? { inset: 0, borderRadius: 0 }
               : {
-                  right: 24,
-                  bottom: 96,
-                  width: 408,
-                  height: 'min(640px, calc(100dvh - 120px))',
-                  maxWidth: 'calc(100vw - 32px)',
-                  borderRadius: 4,
-                  border: '1px solid',
-                  borderColor: 'divider',
-                }),
+                right: 24,
+                bottom: 96,
+                width: 408,
+                height: 'min(640px, calc(100dvh - 120px))',
+                maxWidth: 'calc(100vw - 32px)',
+                borderRadius: 4,
+                border: '1px solid',
+                borderColor: 'divider',
+              }),
           }}
         >
           <Box
@@ -118,7 +118,7 @@ export default function Chat() {
               px: { xs: 2, sm: 2.5 },
               py: 2,
               color: 'primary.contrastText',
-              background: `linear-gradient(135deg, ${tema.palette.primary.dark}, ${tema.palette.primary.main})`,
+              background: tema.palette.primary.main,
             }}
           >
             <Stack direction="row" spacing={2} sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
@@ -183,25 +183,6 @@ export default function Chat() {
                   </Paper>
                 </Stack>
               ))}
-              {mensagens.length === 1 && (
-                <Box>
-                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
-                    Sugestões rápidas
-                  </Typography>
-                  <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 0.75 }}>
-                    {sugestoes.map((sugestao) => (
-                      <Chip
-                        key={sugestao}
-                        label={sugestao}
-                        size="small"
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => manipularSugestao(sugestao)}
-                      />
-                    ))}
-                  </Stack>
-                </Box>
-              )}
               {mutacaoChat.isPending && (
                 <Stack direction="row" spacing={1.25} sx={{ alignItems: 'flex-end' }}>
                   <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>

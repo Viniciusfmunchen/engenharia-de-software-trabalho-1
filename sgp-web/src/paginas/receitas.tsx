@@ -6,7 +6,7 @@ import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import ListaReceitas from '@/componentes/receitas/lista';
 import Conteiner from '@/componentes/ui/conteiner';
 import SearchIcon from '@mui/icons-material/Search';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useObterPaginado } from '@/hooks/consulta';
 import { ROTAS_API } from '@/constantes/rotas-api';
 import type { Receita } from '@/schemas/receita';
@@ -16,8 +16,19 @@ import FormularioReceita from '@/componentes/receitas/formulario';
 const Receitas = () => {
   const [formularioAberto, setFormularioAberto] = useState(false);
   const [busca, setBusca] = useState('');
+  const [buscaRetardada, setBuscaRetardada] = useState('');
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setBuscaRetardada(busca);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [busca]);
+
   const { dados: receitas } = useObterPaginado<Receita>({
     endpoint: ROTAS_API.RECEITA.BASE,
+    parametrosRequisicao: { nomeReceita: buscaRetardada }
   });
 
   return (
@@ -46,7 +57,7 @@ const Receitas = () => {
             fullWidth
             size="small"
             label={mensagens.paginas.receitas.pesquisar}
-            placeholder={mensagens.paginas.receitas.placeholderPesquisa}
+            placeholder='Nome da receita...'
             value={busca}
             onChange={(evento) => setBusca(evento.target.value)}
             slotProps={{

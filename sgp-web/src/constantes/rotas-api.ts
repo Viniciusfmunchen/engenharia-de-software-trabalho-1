@@ -11,7 +11,8 @@ export const ROTAS_API = {
     UM: '/ingrediente/unidade'
   },
   UNIDADE: {
-    BASE: '/unidade'
+    BASE: '/unidade',
+    POR_ID: (id: string | number | null | undefined) => `/unidade/${id}`,
   },
   ASSISTENTE: {
     CHAT: '/assistente/chat',

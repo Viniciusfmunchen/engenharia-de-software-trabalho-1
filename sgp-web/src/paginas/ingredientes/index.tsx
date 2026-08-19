@@ -13,18 +13,30 @@ import { formatarMoeda } from '@/utils/formatar-moeda';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import { Button, InputAdornment, Stack, TextField } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const Ingredientes = () => {
-  const [busca, setBusca] = useState('');
   const [formularioAberto, setFormularioAberto] = useState(false);
+  const [busca, setBusca] = useState('');
+  const [buscaRetardada, setBuscaRetardada] = useState('')
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setBuscaRetardada(busca);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [busca]);
 
   const { dados: ingredientesInfo } = useObter<{ estoqueBaixo: number, valorTotalEstoque: number }>({
     endpoint: `${ROTAS_API.INGREDIENTE.BASE}/info`
   })
 
   const { dados: ingredientes, totalElementos } = useObterPaginado<Ingrediente>({
-    endpoint: ROTAS_API.INGREDIENTE.BASE
+    endpoint: ROTAS_API.INGREDIENTE.BASE,
+    parametrosRequisicao: {
+      nomeIngrediente: buscaRetardada
+    }
   })
 
   return (
@@ -71,7 +83,7 @@ const Ingredientes = () => {
             fullWidth
             size="small"
             label={mensagens.paginas.ingredientes.pesquisar}
-            placeholder={mensagens.paginas.ingredientes.placeholderPesquisa}
+            placeholder='Nome do ingrediente...'
             value={busca}
             onChange={(evento) => setBusca(evento.target.value)}
             slotProps={{
