@@ -83,6 +83,10 @@ const FormularioIngrediente = ({
     values: valores,
   });
 
+  const { dados: unidadeMedida } = useObter<UnidadeMedida>({
+    endpoint: ROTAS_API.UNIDADE.POR_ID(formulario.watch('idUnidadeMedida'))
+  })
+
   const manipularFechamento = () => {
     formulario.reset(valoresPadrao);
     aoFechar();
@@ -134,7 +138,7 @@ const FormularioIngrediente = ({
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 2 }}>
         <CampoTextoFormulario<CriarIngrediente>
           name="custoPorUnidade"
-          label={mensagens.formularios.ingrediente.custoPorUnidade}
+          label={mensagens.formularios.ingrediente.custoPorUnidade + "(" + (unidadeMedida?.nomeUnidadeMedida ?? '-') + ")"}
           type="number"
           size="small"
           fullWidth
@@ -142,7 +146,7 @@ const FormularioIngrediente = ({
         />
         <CampoTextoFormulario<CriarIngrediente>
           name="estoqueAtual"
-          label={mensagens.formularios.ingrediente.estoqueAtual}
+          label={mensagens.formularios.ingrediente.estoqueAtual + "(" + (unidadeMedida?.nomeUnidadeMedida ?? '-') + ")"}
           type="number"
           size="small"
           fullWidth
@@ -150,7 +154,7 @@ const FormularioIngrediente = ({
         />
         <CampoTextoFormulario<CriarIngrediente>
           name="estoqueMinimo"
-          label={mensagens.formularios.ingrediente.estoqueMinimo}
+          label={mensagens.formularios.ingrediente.estoqueMinimo + "(" + (unidadeMedida?.nomeUnidadeMedida ?? '-') + ")"}
           type="number"
           size="small"
           fullWidth

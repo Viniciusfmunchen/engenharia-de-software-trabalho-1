@@ -21,11 +21,6 @@ const ResumoReceita = ({ receita }: PropriedadesResumoReceita) => {
         value={formatarMoeda(receita.custoPorReceita ?? 0)}
       />
       <Resumo
-        icon={<AttachMoneyIcon fontSize="small" />}
-        label={mensagens.paginas.receitas.custoPorUnidade}
-        value={formatarMoeda(receita.custoPorUnidade ?? 0)}
-      />
-      <Resumo
         icon={<AccessTimeIcon fontSize="small" />}
         label={mensagens.paginas.receitas.preparo}
         value={formatarTempo(receita.tempoPreparo)}

@@ -12,13 +12,11 @@ interface PropriedadesListaCamposIngredientes {
 }
 
 const ListaCamposIngredientes = ({ ingredientes }: PropriedadesListaCamposIngredientes) => {
-  const { control } = useFormContext<CriarReceita>();
+  const { control, watch } = useFormContext<CriarReceita>();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'ingredientes',
   });
-
-  console.log(fields)
 
   const adicionarIngrediente = () =>
     append({
@@ -43,40 +41,52 @@ const ListaCamposIngredientes = ({ ingredientes }: PropriedadesListaCamposIngred
         </Button>
       </Stack>
 
-      {fields.map((campo, indice) => (
-        <Stack
-          key={campo.idIngrediente}
-          direction={{ xs: 'column', sm: 'row' }}
-          sx={{ alignItems: { sm: 'flex-start' }, gap: 1 }}
-        >
-          <CampoSelecaoFormulario<CriarReceita>
-            name={`ingredientes.${indice}.idIngrediente`}
-            label={mensagens.formularios.receita.ingrediente}
-            options={ingredientes.map((ingrediente) => ({
-              value: ingrediente.idIngrediente,
-              label: ingrediente.nomeIngrediente,
-            }))}
-            size="small"
-            fullWidth
-          />
-          <CampoTextoFormulario<CriarReceita>
-            name={`ingredientes.${indice}.quantidade`}
-            label={mensagens.comum.quantidade}
-            type="number"
-            size="small"
-            sx={{ width: { xs: '100%', sm: 180 } }}
-            slotProps={{ htmlInput: { min: 0, step: '0.01' } }}
-          />
-          <IconButton
-            type="button"
-            aria-label={mensagens.formularios.receita.removerIngrediente}
-            onClick={() => remove(indice)}
-            disabled={fields.length === 1}
+      {fields.map((campo, indice) => {
+        const idSelecionado = watch(`ingredientes.${indice}.idIngrediente`);
+
+        const ingredienteDetalhes = ingredientes.find(
+          (ing) => Number(ing.idIngrediente) === Number(idSelecionado)
+        );
+
+        const labelQuantidade = ingredienteDetalhes?.unidadeMedida?.nomeUnidadeMedida
+          ? `${mensagens.comum.quantidade} (${ingredienteDetalhes.unidadeMedida.nomeUnidadeMedida})`
+          : mensagens.comum.quantidade;
+
+        return (
+          <Stack
+            key={campo.id}
+            direction={{ xs: 'column', sm: 'row' }}
+            sx={{ alignItems: { sm: 'flex-start' }, gap: 1 }}
           >
-            <DeleteIcon />
-          </IconButton>
-        </Stack>
-      ))}
+            <CampoSelecaoFormulario<CriarReceita>
+              name={`ingredientes.${indice}.idIngrediente`}
+              label={mensagens.formularios.receita.ingrediente}
+              options={ingredientes.map((ingrediente) => ({
+                value: ingrediente.idIngrediente,
+                label: ingrediente.nomeIngrediente,
+              }))}
+              size="small"
+              fullWidth
+            />
+            <CampoTextoFormulario<CriarReceita>
+              name={`ingredientes.${indice}.quantidade`}
+              label={labelQuantidade}
+              type="number"
+              size="small"
+              sx={{ width: { xs: '100%', sm: 180 } }}
+              slotProps={{ htmlInput: { min: 0, step: '0.01' } }}
+            />
+            <IconButton
+              type="button"
+              aria-label={mensagens.formularios.receita.removerIngrediente}
+              onClick={() => remove(indice)}
+              disabled={fields.length === 1}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Stack>
+        );
+      })}
     </Stack>
   );
 };

@@ -122,7 +122,7 @@ const SimulacaoProducao = () => {
                       label='Ingredientes insuficientes.'
                     />}
                     <Typography variant="subtitle2">
-                      {ingrediente.quantidadeNecessaria}
+                      {ingrediente.quantidadeNecessaria} {ingrediente.unidadeMedida?.abreviacao}
                     </Typography>
                   </Stack>
 
